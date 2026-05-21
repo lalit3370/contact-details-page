@@ -1,7 +1,7 @@
 {
   "fields": {
-    "firstName": { "label": "First Name", "type": "string" },
-    "lastName": { "label": "Last Name", "type": "string" },
+    "firstName": { "label": "First Name", "type": "string", "width": "half" },
+    "lastName": { "label": "Last Name", "type": "string", "width": "half" },
     "phone": { "label": "Phone Number", "type": "phone" },
     "email": { "label": "Email", "type": "email" },
     "address": { "label": "Address", "type": "textarea" },

@@ -33,9 +33,9 @@ function getInitials(name) {
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
 
-export function Chip({ children, tone = 'default', className, ...rest }) {
+export function Chip({ children, className, ...rest }) {
   return (
-    <span className={`${styles.chip} ${styles[`chip-${tone}`] ?? ''} ${className ?? ''}`} {...rest}>
+    <span className={`${styles.chip} ${className ?? ''}`} {...rest}>
       {children}
     </span>
   );

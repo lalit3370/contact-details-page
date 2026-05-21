@@ -7,8 +7,8 @@ export function SearchFields({ value, onChange }) {
         <span className="sr-only">Search Fields and Folders</span>
         <svg
           className={styles.searchIcon}
-          width="14"
-          height="14"
+          width="16"
+          height="16"
           viewBox="0 0 16 16"
           fill="none"
           aria-hidden="true"
@@ -23,17 +23,24 @@ export function SearchFields({ value, onChange }) {
           value={value}
           onChange={(e) => onChange(e.target.value)}
         />
+        <button
+          type="button"
+          className={styles.searchFilterBtn}
+          aria-label="Filter"
+          onClick={(e) => {
+            e.preventDefault();
+          }}
+        >
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path
+              d="M2 4H14M4 8H12M6 12H10"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+            />
+          </svg>
+        </button>
       </label>
-      <button type="button" className={styles.searchFilterBtn} aria-label="Filter">
-        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-          <path
-            d="M2 4H14M4 8H12M6 12H10"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-          />
-        </svg>
-      </button>
     </div>
   );
 }

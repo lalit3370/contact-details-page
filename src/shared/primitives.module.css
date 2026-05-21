@@ -6,6 +6,7 @@
   border-radius: 50%;
   overflow: hidden;
   flex-shrink: 0;
+  box-shadow: 0 0 0 2px var(--color-bg-elevated);
 }
 
 .avatarFallback {
@@ -20,29 +21,14 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding: 2px 8px;
-  border-radius: 999px;
+  padding: 3px 8px;
+  border-radius: 6px;
   background: #e0f2fe;
   color: #075985;
-  font-size: var(--font-xs);
+  font-size: var(--font-sm);
   font-weight: 500;
   line-height: 1.4;
   white-space: nowrap;
-}
-
-.chip-vip {
-  background: #fef3c7;
-  color: #92400e;
-}
-
-.chip-overflow {
-  background: var(--color-bg-subtle);
-  color: var(--color-text-muted);
-}
-
-.chip-tag {
-  background: #ecfeff;
-  color: #155e75;
 }
 
 .iconButton {

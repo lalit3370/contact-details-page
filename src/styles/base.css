@@ -2,7 +2,7 @@
   --color-bg: #ffffff;
   --color-bg-elevated: #ffffff;
   --color-bg-subtle: #f5f6f8;
-  --color-surface: #f7f8fa;
+  --color-surface: #eef0f4;
   --color-border: #e4e7eb;
   --color-border-strong: #cdd2d8;
   --color-text: #1f2328;
@@ -83,4 +83,41 @@ a:hover {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
   border-radius: var(--radius-sm);
+}
+
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: none;
+}
+
+/* Custom thin scrollbar (replaces browser defaults on all scroll surfaces) */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(15, 23, 42, 0.18) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: rgba(15, 23, 42, 0.18);
+  border-radius: 999px;
+  border: 3px solid transparent;
+  background-clip: padding-box;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: rgba(15, 23, 42, 0.32);
+  background-clip: padding-box;
+}
+
+*::-webkit-scrollbar-corner {
+  background: transparent;
 }

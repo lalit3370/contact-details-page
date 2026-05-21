@@ -1,24 +1,25 @@
 .page {
   height: 100vh;
   display: grid;
-  grid-template-columns: 340px minmax(0, 1fr) 300px 36px;
+  grid-template-columns: 340px minmax(0, 1fr) 300px 48px;
+  gap: 12px;
+  padding: 12px;
   background: var(--color-surface);
   font-family: var(--font-sans);
 }
 
 .paneSlot {
-  height: 100vh;
+  min-height: 0;
   overflow: hidden;
-}
-
-.paneSlot[data-pane='contactDetails'] {
+  border-radius: 12px;
   background: var(--color-bg-elevated);
+  box-shadow:
+    0 1px 2px rgba(15, 23, 42, 0.04),
+    0 4px 12px rgba(15, 23, 42, 0.06);
 }
 
 .skeletonPane {
   padding: var(--space-4);
-  background: var(--color-bg-elevated);
-  border-right: 1px solid var(--color-border);
 }
 
 .errorMessage {
@@ -46,12 +47,11 @@
 }
 
 .actionRail {
-  background: var(--color-bg-elevated);
-  border-left: 1px solid var(--color-border);
+  background: transparent;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: var(--space-3) 0;
+  padding: var(--space-2) 0;
   gap: var(--space-2);
 }
 
@@ -59,9 +59,9 @@
   appearance: none;
   background: transparent;
   border: none;
-  width: 28px;
-  height: 28px;
-  border-radius: var(--radius-sm);
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
   color: var(--color-text-muted);
   cursor: pointer;
   display: inline-flex;
@@ -70,7 +70,7 @@
 }
 
 .railBtn:hover {
-  background: var(--color-bg-subtle);
+  background: var(--color-bg-elevated);
   color: var(--color-text);
 }
 
@@ -81,7 +81,7 @@
 
 @media (max-width: 1100px) {
   .page {
-    grid-template-columns: 320px minmax(0, 1fr) 36px;
+    grid-template-columns: 320px minmax(0, 1fr) 48px;
   }
   .paneSlot[data-pane='notes'] {
     display: none;
@@ -94,13 +94,11 @@
     grid-auto-rows: min-content;
     height: auto;
     min-height: 100vh;
+    padding: 8px;
+    gap: 8px;
   }
   .actionRail {
     display: none;
-  }
-  .paneSlot {
-    height: auto;
-    border-bottom: 1px solid var(--color-border);
   }
   .paneSlot[data-pane='notes'] {
     display: block;
