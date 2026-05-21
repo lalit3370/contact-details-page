@@ -1,0 +1,28 @@
+{
+  "fields": {
+    "firstName": { "label": "First Name", "type": "string" },
+    "lastName": { "label": "Last Name", "type": "string" },
+    "phone": { "label": "Phone Number", "type": "phone" },
+    "email": { "label": "Email", "type": "email" },
+    "address": { "label": "Address", "type": "textarea" },
+    "businessName": { "label": "Business Name", "type": "string" },
+    "streetAddress": { "label": "Street Address", "type": "string" },
+    "city": { "label": "City", "type": "string" },
+    "country": { "label": "Country", "type": "string" },
+    "budget": { "label": "Budget", "type": "currency", "currency": "USD" },
+    "preferredMake": {
+      "label": "Preferred Make",
+      "type": "radio",
+      "options": ["Toyota", "Honda", "Ford", "Chevrolet", "Tesla"]
+    },
+    "preferredModel": { "label": "Preferred Model", "type": "string" },
+    "purchaseDate": { "label": "Target Purchase Date", "type": "date" },
+    "tradein": { "label": "Has Trade-in", "type": "boolean" },
+    "preferredFeatures": {
+      "label": "Must-have Features",
+      "type": "multi-select",
+      "options": ["Sunroof", "AWD", "Heated Seats", "Apple CarPlay", "Adaptive Cruise"]
+    },
+    "referralUrl": { "label": "Referral Link", "type": "url" }
+  }
+}

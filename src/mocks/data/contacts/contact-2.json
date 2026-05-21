@@ -1,0 +1,31 @@
+{
+  "id": "contact-2",
+  "header": {
+    "avatarUrl": null,
+    "displayName": "Marcus Chen",
+    "owner": { "id": "olivia-perry", "name": "Olivia Perry" },
+    "followers": [{ "id": "u4", "name": "Wade Warren" }],
+    "tags": ["Lead"],
+    "tagsOverflow": 0,
+    "dnd": true
+  },
+  "fields": {
+    "firstName": "Marcus",
+    "lastName": "Chen",
+    "phone": "(555) 987-6543",
+    "phoneCountry": "US",
+    "email": "marcus.chen@nextgen.example.com",
+    "address": "458 Cedar Avenue\nPortland, OR 97205. USA.",
+    "businessName": "NextGen Motors",
+    "streetAddress": "458 Cedar Avenue",
+    "city": "Portland",
+    "country": "United States",
+    "budget": 62000,
+    "preferredMake": "Tesla",
+    "preferredModel": "Model Y Long Range",
+    "purchaseDate": "2026-12-01",
+    "tradein": false,
+    "preferredFeatures": ["AWD", "Adaptive Cruise", "Sunroof"],
+    "referralUrl": "https://example.com/referrals/marcus-chen"
+  }
+}

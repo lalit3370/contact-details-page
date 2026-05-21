@@ -1,0 +1,126 @@
+.pane {
+  background: var(--color-bg);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.headTitle {
+  flex: 1;
+  margin: 0;
+  font-size: var(--font-md);
+  font-weight: 600;
+}
+
+.addBtn {
+  appearance: none;
+  background: transparent;
+  border: none;
+  color: var(--color-primary);
+  font: inherit;
+  font-weight: 500;
+  font-size: var(--font-sm);
+  cursor: pointer;
+}
+
+.addBtn:hover {
+  text-decoration: underline;
+}
+
+.closeBtn {
+  appearance: none;
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-sm);
+}
+
+.closeBtn:hover {
+  background: var(--color-bg-subtle);
+  color: var(--color-text);
+}
+
+.body {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-3) var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.skeletonStack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.empty {
+  color: var(--color-text-muted);
+  text-align: center;
+  padding: var(--space-8) var(--space-4);
+}
+
+.card {
+  background: var(--color-note-yellow);
+  border: 1px solid var(--color-note-yellow-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  font-size: var(--font-md);
+  line-height: 1.5;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cardOverdue {
+  background: #fee2e2;
+  border-color: #fca5a5;
+}
+
+.cardTitle {
+  margin: 0;
+  font-size: var(--font-md);
+  font-weight: 600;
+  color: #4a2d00;
+}
+
+.cardMention {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.cardBody {
+  margin: 0;
+  color: #4a2d00;
+  font-size: var(--font-sm);
+}
+
+.cardMeta {
+  margin: 0;
+  font-size: var(--font-xs);
+  color: #8a6a30;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.overdueTag {
+  background: var(--color-danger);
+  color: white;
+  font-weight: 500;
+  padding: 1px 6px;
+  border-radius: 999px;
+}

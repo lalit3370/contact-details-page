@@ -1,0 +1,17 @@
+{
+  "threads": [
+    {
+      "id": "tm1",
+      "subject": "Test drive scheduled — Model Y Long Range",
+      "messages": [
+        {
+          "id": "mm1",
+          "sender": { "name": "Marcus Chen", "to": "Me", "avatar": null },
+          "timestamp": "1 hr ago",
+          "body": "Confirming the test drive for Saturday 10 AM at the Portland showroom. Looking forward to it.",
+          "actions": ["reply"]
+        }
+      ]
+    }
+  ]
+}

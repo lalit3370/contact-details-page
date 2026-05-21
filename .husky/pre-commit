@@ -1,0 +1,3 @@
+#!/usr/bin/env sh
+# Runs ESLint --fix, Prettier, and Vitest-related tests on staged files.
+npx lint-staged

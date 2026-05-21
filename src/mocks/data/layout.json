@@ -1,0 +1,41 @@
+{
+  "panes": [
+    {
+      "id": "contactDetails",
+      "type": "contactDetails",
+      "folders": [
+        {
+          "id": "contact",
+          "label": "Contact",
+          "fieldIds": ["firstName", "lastName", "phone", "email", "address"],
+          "defaultOpen": true,
+          "showAdd": true
+        },
+        {
+          "id": "additionalInfo",
+          "label": "Additional Info",
+          "fieldIds": ["businessName", "streetAddress", "city", "country"],
+          "defaultOpen": true,
+          "showAdd": false
+        },
+        {
+          "id": "usedCarBuyerPreferences",
+          "label": "Used Car Buyer Preferences",
+          "fieldIds": [
+            "budget",
+            "preferredMake",
+            "preferredModel",
+            "purchaseDate",
+            "tradein",
+            "preferredFeatures",
+            "referralUrl"
+          ],
+          "defaultOpen": false,
+          "showAdd": false
+        }
+      ]
+    },
+    { "id": "conversations", "type": "conversations" },
+    { "id": "notes", "type": "notes" }
+  ]
+}

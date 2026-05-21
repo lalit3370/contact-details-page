@@ -1,0 +1,18 @@
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { AppProviders } from './AppProviders.jsx';
+import { ContactDetailsRoute } from './routes/ContactDetailsRoute.jsx';
+import { NotFoundRoute } from './routes/NotFoundRoute.jsx';
+
+export function App() {
+  return (
+    <AppProviders>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Navigate to="/contact/details/contact-1" replace />} />
+          <Route path="/contact/details/:contactId" element={<ContactDetailsRoute />} />
+          <Route path="*" element={<NotFoundRoute />} />
+        </Routes>
+      </BrowserRouter>
+    </AppProviders>
+  );
+}

@@ -1,0 +1,86 @@
+.avatar,
+.avatarFallback {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.avatarFallback {
+  background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+  color: #1e3a8a;
+  font-weight: 600;
+  font-family: var(--font-sans);
+  line-height: 1;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #e0f2fe;
+  color: #075985;
+  font-size: var(--font-xs);
+  font-weight: 500;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.chip-vip {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.chip-overflow {
+  background: var(--color-bg-subtle);
+  color: var(--color-text-muted);
+}
+
+.chip-tag {
+  background: #ecfeff;
+  color: #155e75;
+}
+
+.iconButton {
+  appearance: none;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  padding: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  line-height: 0;
+}
+
+.iconButton:hover {
+  background: var(--color-bg-subtle);
+  color: var(--color-text);
+}
+
+.iconButton:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.skeleton {
+  display: inline-block;
+  background: linear-gradient(90deg, #eceff3 0%, #f6f8fa 50%, #eceff3 100%);
+  background-size: 200% 100%;
+  animation: skeleton 1.4s linear infinite;
+}
+
+@keyframes skeleton {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "threads": [
+    {
+      "id": "t1",
+      "subject": "Set up a new time to follow up on the mail chain issue that we talked about this morning",
+      "messages": [
+        {
+          "id": "m1",
+          "sender": { "name": "Olivia John", "to": "Me", "avatar": null },
+          "timestamp": "5 min ago",
+          "starred": true,
+          "body": "Hey John,\n\nYou Order has reached.\n\nYour Urban Wellness LLP order has arrived in your city, Click the button below to track your order in real-time. Arriving on Tuesday, November 19th.",
+          "attachments": [
+            { "type": "orderTracking", "orderId": "UW-12345", "label": "Track Your Order" }
+          ],
+          "actions": ["reply"]
+        },
+        {
+          "id": "m2",
+          "sender": { "name": "Olivia", "avatar": null },
+          "timestamp": "11:44 AM",
+          "body": "Please let me know"
+        }
+      ],
+      "typing": [{ "name": "Olivia" }]
+    },
+    {
+      "id": "t2",
+      "subject": "Set up a new time to follow up on the mail chain issue that we talked about this morning",
+      "messages": [
+        {
+          "id": "m3",
+          "sender": { "name": "Olivia John", "to": "Me", "avatar": null },
+          "timestamp": "5 min ago",
+          "starred": true,
+          "body": "Hey John,\n\nYou Order has reached.\n\nYour Urban Wellness LLP order has arrived in your city, Click the button below to track your order in real-time. Arriving on Tuesday, November 19th.",
+          "attachments": [
+            { "type": "orderTracking", "orderId": "UW-12346", "label": "Track Your Order" }
+          ],
+          "actions": ["reply"]
+        }
+      ]
+    }
+  ]
+}

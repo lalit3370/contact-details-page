@@ -1,0 +1,35 @@
+{
+  "id": "contact-1",
+  "header": {
+    "avatarUrl": null,
+    "displayName": "Olivia John",
+    "owner": { "id": "devon-lane", "name": "Devon Lane" },
+    "followers": [
+      { "id": "u1", "name": "Brooklyn Simmons" },
+      { "id": "u2", "name": "Cameron Williamson" },
+      { "id": "u3", "name": "Esther Howard" }
+    ],
+    "tags": ["Shared Contact", "VIP"],
+    "tagsOverflow": 15,
+    "dnd": false
+  },
+  "fields": {
+    "firstName": "Olivia",
+    "lastName": "John",
+    "phone": "(555) 123-4567",
+    "phoneCountry": "US",
+    "email": "olivia.perry@example.com",
+    "address": "123 Maple Street, Springfield.\nIL 62704. USA.",
+    "businessName": "ABC Corp",
+    "streetAddress": "123 Main Street",
+    "city": "Springfield",
+    "country": "United States",
+    "budget": 35000,
+    "preferredMake": "Toyota",
+    "preferredModel": "Camry XLE",
+    "purchaseDate": "2026-09-15",
+    "tradein": true,
+    "preferredFeatures": ["Apple CarPlay", "Heated Seats"],
+    "referralUrl": "https://example.com/referrals/olivia-john"
+  }
+}
