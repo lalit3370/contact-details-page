@@ -3,7 +3,7 @@ import { useConversations, useContact } from '../../api/queries.js';
 import { Thread } from './Thread.jsx';
 import { ChatMessage } from './ChatMessage.jsx';
 import { MessageInput } from './MessageInput.jsx';
-import { Skeleton } from '../../shared/primitives.jsx';
+import { Skeleton } from '@/shared/primitives.jsx';
 import { TypingIndicator } from './TypingIndicator.jsx';
 
 import styles from './Conversations.module.css';

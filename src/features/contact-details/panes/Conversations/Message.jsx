@@ -1,4 +1,4 @@
-import { Avatar } from '../../shared/primitives.jsx';
+import { Avatar } from '@/shared/primitives.jsx';
 import { OrderTrackingCard } from './OrderTrackingCard.jsx';
 import styles from './Conversations.module.css';
 

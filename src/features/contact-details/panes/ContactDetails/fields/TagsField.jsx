@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import styles from './Field.module.css';
-import { Chip } from '../../../shared/primitives.jsx';
+import { Chip } from '@/shared/primitives.jsx';
 
 export function TagsField({ field, value, fieldId, contactId }) {
   const [editing, setEditing] = useState(false);

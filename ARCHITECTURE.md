@@ -2,7 +2,7 @@
 
 ## Architecture Overview
 
-A single-page React app that renders a CRM contact details view from JSON configuration. Page structure (`layout.json`), field catalog (`contactFields.json`), and per-contact data are fetched through MSW-backed mock endpoints and joined in the component tree by a resolver hook. Three panes — Contact Details, Conversations, Notes — are dispatched from a pane registry; field rendering is dispatched from a field registry keyed by type id.
+A single-page React app rendering a CRM contact details view from JSON configuration. Layout, field catalog, and per-contact data load through MSW-backed endpoints and join in the component tree via a resolver hook. Three panes — Contact Details, Conversations, Notes — are dispatched from a pane registry; field rendering is dispatched from a field registry keyed by type id.
 
 ## Tech Stack
 
@@ -22,31 +22,29 @@ A single-page React app that renders a CRM contact details view from JSON config
 
 ```
 src/
-├── api/            TanStack QueryClient + query hooks
-├── layout/         PageLayout, pane registry, layout override context, uploader
-├── panes/          ContactDetails, Conversations, Notes — one folder per pane
-├── routes/         Route components (read URL params, render layout)
-├── shared/         Generic primitives (Avatar, Chip, IconButton, Tooltip, ErrorBoundary)
-├── mocks/          MSW handlers + JSON fixtures under data/
-├── styles/         Reset + design tokens
-└── __tests__/      Vitest specs
+├── app/                       App shell — entry, providers, router, QueryClient, 404
+├── features/                  Feature modules — one folder per product area
+│   └── contact-details/
+│       ├── api/               Query hooks
+│       ├── layout/            PageLayout, pane registry, override + uploader
+│       ├── panes/             ContactDetails, Conversations, Notes
+│       ├── routes/            Route components
+│       └── __tests__/         Vitest specs
+├── shared/                    Generic primitives reused across features
+├── mocks/                     MSW worker + handlers + JSON fixtures
+├── styles/                    Reset + design tokens
+└── test/                      Vitest setup
 ```
 
-Ownership boundary: each pane folder owns its rendering, registries, and resolver hooks. `shared/` only holds primitives reused by multiple panes. `layout/` knows about panes but not their internals.
+Three layers:
+
+- **`app/`** owns bootstrapping, the provider tree, and the router. A second feature adds a route here; nothing else changes.
+- **`features/<name>/`** owns rendering, composition, registries, query hooks, and routes for one product area. Self-contained.
+- **`shared/`** holds primitives reused by multiple features. Single-feature code stays inside the feature.
+
+Cross-boundary imports use the `@/` alias (`@/shared/primitives.jsx`, `@/features/...`); intra-feature imports stay relative. New features live at `features/<name>/` with the same shape.
 
 ## Data Flow
-
-```
-JSON (mocks/data) → MSW handler → fetch (api/queries) → Query hook
-   → Resolver hook (panes/.../useResolvedFolders)
-   → Pane component (via paneRegistry)
-   → FieldRow (via fieldRegistry)
-   → Field component
-```
-
-Composition happens once, in `useResolvedFolders`: it joins layout, field catalog, and contact data into folder rows. Components below the pane level receive props only — they never call `useQuery`.
-
-## Routing
 
 | Path                          | Component                        |
 | ----------------------------- | -------------------------------- |
@@ -54,9 +52,28 @@ Composition happens once, in `useResolvedFolders`: it joins layout, field catalo
 | `/contact/details/:contactId` | `ContactDetailsRoute`            |
 | `*`                           | `NotFoundRoute`                  |
 
-Router `basename` is derived from `import.meta.env.BASE_URL` so dev (`/`) and production (`/contact-details-page`) share code.
+```
+JSON (mocks/data) → MSW handler → Query hook
+   → Resolver hook (useResolvedFolders)
+   → Pane (via paneRegistry)
+   → FieldRow (via fieldRegistry)
+   → Field component
+```
 
-Hook scope is explicit: `useContact(id)`, `useConversations(id)`, `useNotes(id)` are contact-scoped; `useLayout()`, `useFields()`, `useContacts()` are tenant-wide.
+Composition happens once, in `useResolvedFolders` — it joins layout × field catalog × contact data into folder rows. Components below the pane level receive props only; they never call `useQuery`.
+
+## Rendering Architecture
+
+Two registries drive composition from JSON:
+
+- **Pane registry** maps `pane.type` → component. `PageLayout` iterates `layout.panes` and dispatches.
+- **Field registry** maps 12 field type ids → 7 components. Type families that share rendering share a component and branch on a prop.
+
+Adding a pane or field type is a registry entry plus a component — no `switch` statements in render code.
+
+## Accessibility
+
+Radix UI provides a11y-heavy primitives (Dialog, Collapsible, DropdownMenu, Tooltip) so focus traps, escape handling, and ARIA wiring come from the library. Markup uses semantic elements (`section`, `article`, `header`, `h1`) with `role="toolbar"`/`role="search"` where the underlying element is generic. Inline-edit fields commit on Enter, revert on Escape, and remain reachable by keyboard alone.
 
 ## State Management
 
@@ -67,73 +84,55 @@ Hook scope is explicit: `useContact(id)`, `useConversations(id)`, `useNotes(id)`
 | Folder collapse, search input | Local `useState` in the owning component |
 | Runtime layout/field override | `LayoutOverrideContext`                  |
 
-Edits write through `queryClient.setQueryData`; the cache is the single source of truth. The one Context exists because the layout uploader must inject overrides from outside the component subtree that consumes them.
-
-## Rendering Architecture
-
-Two registries drive composition from JSON.
-
-**Pane registry** (`layout/paneRegistry.js`) maps `pane.type` → component. `PageLayout` iterates `layout.panes`, wraps each in an `ErrorBoundary`, and dispatches by type.
-
-**Field registry** (`panes/ContactDetails/fieldRegistry.js`) maps the 12 field type ids to 7 components — type families that share rendering (text/email/url/textarea, number/currency, radio/multi-select) share a component and branch on a prop. `FieldRow` dispatches via this registry and falls back to a label+value renderer for unknown types.
-
-**Resolver hook** (`useResolvedFolders`) is the single join point for layout × field catalog × contact data. It's memoized against the three cache slices and consumed only by `ContactDetails`. A second resolver in `Conversations` (`buildAvatarResolver`) lets messages reuse the contact's avatar URL by sender-name match, keeping conversations JSON free of duplicated assets.
-
-Why registries: layout JSON drives pane order and field rendering with no `switch` statements in components. Adding a pane or field type is a registry entry plus a component.
+Edits write through `queryClient.setQueryData`; the cache is the source of truth. One Context exists because the uploader injects overrides from outside the consuming subtree.
 
 ## Configuration Model
 
-Four JSON inputs drive the UI:
+JSON inputs drive the UI:
 
-- **`layout.json`** — pane list. For the `contactDetails` pane, an array of folders, each declaring `fieldIds` it should render.
-- **`contactFields.json`** — field catalog keyed by id (`{ label, type, width?, options?, currency?, … }`). `width: "half"` opts a row into a 2-column grid.
-- **`contacts/{id}.json`** — per-contact `header` (fixed shape) and `fields` (keyed by `contactFields` ids).
-- **`conversations/{id}.json`** — heterogeneous `items[]` with `kind: "thread" | "chat"`, plus an optional `typing[]` array.
-- **`notes/{id}.json`** — flat `notes[]`.
+- **`layout.json`** — pane list; folders + `fieldIds` per `contactDetails` pane.
+- **`contactFields.json`** — field catalog keyed by id (`label`, `type`, optional `width`/`options`).
+- **`contacts/{id}.json`** — header + field values keyed by `contactFields` ids.
+- **`conversations/{id}.json`** — `items[]` of `kind: thread | chat`.
+- **`notes/{id}.json`** — `notes[]`.
 
-Rendering is configuration-driven end to end: changing folder order, field width, or pane visibility requires only a JSON edit. The runtime layout uploader exploits this to swap layout/fields without a reload.
+Pane order, field width, and visibility are JSON edits. The runtime uploader swaps configs in-memory via the override context.
+
+## Design Decisions
+
+| Decision        | Choice                               | Rationale                                                         |
+| --------------- | ------------------------------------ | ----------------------------------------------------------------- |
+| Server state    | TanStack Query                       | Cache doubles as the edit store via `setQueryData`                |
+| Field rendering | Registry, 12 type ids → 7 components | Share a component when rendering is identical; branch on props    |
+| Pane rendering  | Registry                             | Layout JSON drives order and visibility without component changes |
+| Conversations   | `items[]` with `kind`                | Threads and chats are timeline siblings, not nested               |
+| Layout override | Single Context                       | Uploader injects from outside the consuming subtree               |
+| Subpath routing | `basename` from `BASE_URL`           | Same code runs at `/` in dev and `/contact-details-page` in prod  |
 
 ## Error Handling
 
 Three boundaries:
 
-- **Top-level** in `AppProviders` — catches anything that escapes pane boundaries.
-- **Per-pane** in `PageLayout` — a failing pane shows an inline fallback; other panes stay live.
-- **In-tree fallbacks** — unknown pane types and unknown field types log in dev and render nothing / a `FallbackField` in prod.
+- **Top-level** (`AppProviders`) — catches anything past the panes.
+- **Per-pane** (`PageLayout`) — a failing pane shows an inline fallback; siblings stay live.
+- **In-tree fallbacks** — unknown pane/field types degrade gracefully with a dev warning.
 
-TanStack Query's `isError` is surfaced per pane, so a single failing endpoint never collapses the page.
+`isError` is surfaced per pane, so one failed endpoint never collapses the page.
 
 ## Performance
 
-- `useResolvedFolders` is memoized; it recomputes only when layout, fields, or contact data change.
-- Field edit state is local, so editing one field does not rerender siblings.
-- TanStack Query's structural sharing limits rerenders to consumers whose cache slice actually changed.
+- `useResolvedFolders` memoizes against layout × fields × contact slices.
+- Field edit state is local — editing one field doesn't rerender siblings.
+- TanStack Query's structural sharing scopes rerenders to changed cache slices.
 
 ## Testing
 
 Vitest + RTL. Three specs cover the load-bearing seams:
 
-- **`fieldRegistry.test`** — every registered field type renders for a synthetic field def + value.
-- **`useResolvedFolders.test`** — happy join, missing field def, layout with no contactDetails pane.
-- **`ContactDetails.test`** — full component render with mocked providers.
+- **`fieldRegistry.test`** — every registered type renders.
+- **`useResolvedFolders.test`** — happy join, missing field def, layout without `contactDetails`.
+- **`ContactDetails.test`** — full render with mocked providers.
 
 ## Deployment
 
-Deploys to `projects.lalitkumar.dev/contact-details-page/` via GitHub Pages.
-
-- `vite.config.js` sets `base: '/contact-details-page/'` for production builds only.
-- Router `basename`, MSW `serviceWorker.url`, and API URL builders all derive from `import.meta.env.BASE_URL`, so fetch URLs and MSW handler paths always agree on the prefix.
-- The build's `index.html` is copied to `404.html` so Pages serves the SPA shell for deep links.
-- MSW ships in production; it is the demo's backend.
-
-## Design Decisions
-
-| Decision            | Choice                                        | Rationale                                                                |
-| ------------------- | --------------------------------------------- | ------------------------------------------------------------------------ |
-| Server state        | TanStack Query                                | Cache doubles as the edit store via `setQueryData`                       |
-| Field rendering     | Registry, 12 type ids → 7 components          | Modularity at the type level; one component where rendering is identical |
-| Pane rendering      | Registry                                      | Layout JSON drives pane order and visibility without component changes   |
-| Conversations model | `items[]` with `kind: "thread" \| "chat"`     | Threads and chats are siblings in the timeline, not nested               |
-| Avatar reuse        | Resolver function, name-match against contact | No avatar duplication across conversation JSON                           |
-| Layout override     | Single React Context                          | Uploader must inject from outside the consuming subtree                  |
-| Subpath routing     | `basename` from `BASE_URL`                    | Same code runs at `/` in dev and `/contact-details-page` in production   |
+GitHub Pages at `projects.lalitkumar.dev/contact-details-page/`. Production sets `base: '/contact-details-page/'`; router `basename`, MSW worker URL, and API paths all derive from `import.meta.env.BASE_URL`, so prefixes stay aligned. `index.html` is copied to `404.html` so deep links survive a hard reload. MSW ships in production — it is the demo's backend.

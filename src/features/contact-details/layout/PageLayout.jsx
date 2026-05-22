@@ -1,9 +1,9 @@
 import { useLayout } from '../api/queries.js';
 import { paneRegistry } from './paneRegistry.js';
 import { LayoutUploader } from './LayoutUploader.jsx';
-import { ErrorBoundary } from '../shared/ErrorBoundary.jsx';
-import { TooltipProvider } from '../shared/Tooltip.jsx';
-import { Skeleton } from '../shared/primitives.jsx';
+import { ErrorBoundary } from '@/shared/ErrorBoundary.jsx';
+import { TooltipProvider } from '@/shared/Tooltip.jsx';
+import { Skeleton } from '@/shared/primitives.jsx';
 import styles from './PageLayout.module.css';
 
 export function PageLayout({ contactId }) {

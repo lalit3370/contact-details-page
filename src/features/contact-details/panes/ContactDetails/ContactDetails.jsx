@@ -6,7 +6,7 @@ import { SearchFields } from './SearchFields.jsx';
 import { Folder } from './Folder.jsx';
 import { FieldRow } from './FieldRow.jsx';
 import { useResolvedFolders } from './useResolvedFolders.js';
-import { Skeleton } from '../../shared/primitives.jsx';
+import { Skeleton } from '@/shared/primitives.jsx';
 import styles from './ContactDetails.module.css';
 
 export function ContactDetails({ contactId }) {

@@ -1,7 +1,7 @@
 import { QueryClientProvider } from '@tanstack/react-query';
-import { queryClient } from './api/queryClient.js';
-import { LayoutOverrideProvider } from './layout/LayoutOverrideContext.jsx';
-import { ErrorBoundary } from './shared/ErrorBoundary.jsx';
+import { queryClient } from './queryClient.js';
+import { LayoutOverrideProvider } from '@/features/contact-details/layout/LayoutOverrideContext.jsx';
+import { ErrorBoundary } from '@/shared/ErrorBoundary.jsx';
 
 export function AppProviders({ children }) {
   return (

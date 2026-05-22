@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { useQueryClient } from '@tanstack/react-query';
 import { useContacts } from '../../api/queries.js';
-import { Avatar, Chip, IconButton } from '../../shared/primitives.jsx';
+import { Avatar, Chip, IconButton } from '@/shared/primitives.jsx';
 import styles from './ContactDetails.module.css';
 
 const OWNER_OPTIONS = [

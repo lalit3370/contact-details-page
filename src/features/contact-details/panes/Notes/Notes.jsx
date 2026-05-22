@@ -1,5 +1,5 @@
 import { useNotes } from '../../api/queries.js';
-import { Skeleton } from '../../shared/primitives.jsx';
+import { Skeleton } from '@/shared/primitives.jsx';
 import styles from './Notes.module.css';
 
 export function Notes({ contactId }) {
