@@ -3,7 +3,7 @@
 [![Deploy](https://github.com/lalit3370/contact-details-page/actions/workflows/deploy.yml/badge.svg)](https://github.com/lalit3370/contact-details-page/actions/workflows/deploy.yml)
 [![Live](https://img.shields.io/badge/live-projects.lalitkumar.dev%2Fcontact--details--page-2563eb)](https://projects.lalitkumar.dev/contact-details-page/)
 
-A dynamic CRM Contact Details page rendered entirely from JSON configs — layout, field catalog, contact data, conversations, and notes. Built as a take-home for the SDE 3 / Lead Engineer role.
+A dynamic CRM Contact Details page rendered entirely from JSON configs — layout, field catalog, contact data, conversations, and notes. A tenant can reshape the UI by editing JSON; no code changes required.
 
 **Live:** [projects.lalitkumar.dev/contact-details-page](https://projects.lalitkumar.dev/contact-details-page/)
 **Deep architecture:** see [`ARCHITECTURE.md`](./ARCHITECTURE.md)
@@ -45,18 +45,18 @@ Dev server runs on **http://localhost:5173** and auto-redirects to `/contact/det
 | Concern                  | Choice                                                          | Why                                                                    |
 | ------------------------ | --------------------------------------------------------------- | ---------------------------------------------------------------------- |
 | Framework                | React 18 + Vite 6                                               | Fast dev server, minimal config                                        |
-| Language                 | JavaScript                                                      | Per spec preference (no TypeScript)                                    |
+| Language                 | JavaScript                                                      | No TypeScript by choice                                                |
 | Routing                  | `react-router-dom` v6                                           | URL drives which contact is shown                                      |
 | Server state + cache     | `@tanstack/react-query` v5                                      | Cache is the single source of truth — including for in-memory edits    |
 | API mocking              | `msw` v2 (browser worker)                                       | Mocking lives in the repo; runs in both dev and prod (no real backend) |
 | Styling                  | CSS Modules + design tokens                                     | Scoped, predictable, zero runtime cost                                 |
-| Accessibility primitives | `@radix-ui/react-{dialog, collapsible, dropdown-menu, tooltip}` | Only for genuinely a11y-heavy bits                                     |
+| Accessibility primitives | `@radix-ui/react-{dialog, collapsible, dropdown-menu, tooltip}` | Used for the a11y-heavy widgets (focus traps, ARIA, keyboard nav)      |
 | Testing                  | Vitest + React Testing Library                                  | Vite-native, fast                                                      |
-| Lint / format            | ESLint flat config + Prettier                                   | Standard pair; husky enforces both pre-commit                          |
+| Lint / format            | ESLint flat config + Prettier                                   | Husky enforces both pre-commit                                         |
 | Commit conventions       | Conventional Commits via commitlint                             | Enforced pre-commit                                                    |
 | CI / deploy              | GitHub Actions → GitHub Pages                                   | One workflow, custom-domain hosting                                    |
 
-**Explicitly not used:** Redux, Zustand, Recoil, MobX (no global state library needed). Material UI, Ant Design, Chakra (no large UI framework). styled-components, Emotion (CSS Modules suffice). i18n libs (UI strings hardcoded English).
+**Not in the dependency tree:** Redux / Zustand / Recoil / MobX (TanStack Query + one Context cover state coordination), Material UI / Ant Design / Chakra (Radix primitives + CSS Modules cover the a11y-heavy widgets), styled-components / Emotion (CSS Modules suffice), an i18n library (UI strings are English-only).
 
 ---
 
