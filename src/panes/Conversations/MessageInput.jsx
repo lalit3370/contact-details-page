@@ -1,15 +1,46 @@
-import { useState } from 'react';
+import { forwardRef, useImperativeHandle, useRef, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import styles from './Conversations.module.css';
 
-export function MessageInput() {
+export const MessageInput = forwardRef(function MessageInput({ contactId }, ref) {
   const [value, setValue] = useState('');
+  const inputRef = useRef(null);
+  const qc = useQueryClient();
+
+  useImperativeHandle(ref, () => ({
+    focus: () => inputRef.current?.focus(),
+  }));
+
+  const send = () => {
+    const trimmed = value.trim();
+    if (!trimmed || !contactId) return;
+    qc.setQueryData(['conversations', contactId], (prev) => {
+      if (!prev) return prev;
+      const now = new Date();
+      const time = `${now.getHours() % 12 || 12}:${String(now.getMinutes()).padStart(2, '0')} ${now.getHours() >= 12 ? 'PM' : 'AM'}`;
+      return {
+        ...prev,
+        items: [
+          ...(prev.items ?? []),
+          {
+            kind: 'chat',
+            id: `local-${now.getTime()}`,
+            sender: { name: 'Me' },
+            timestamp: time,
+            body: trimmed,
+          },
+        ],
+      };
+    });
+    setValue('');
+  };
 
   return (
     <form
       className={styles.composer}
       onSubmit={(e) => {
         e.preventDefault();
-        setValue('');
+        send();
       }}
     >
       <button type="button" className={styles.composerType} aria-label="Message type">
@@ -20,6 +51,7 @@ export function MessageInput() {
       <label className={styles.composerInputWrap}>
         <span className="sr-only">Message</span>
         <input
+          ref={inputRef}
           type="text"
           className={styles.composerInput}
           placeholder="Type your message..."
@@ -42,7 +74,7 @@ export function MessageInput() {
       </button>
     </form>
   );
-}
+});
 
 function EmailIcon() {
   return (

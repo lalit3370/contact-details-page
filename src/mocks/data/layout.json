@@ -15,8 +15,7 @@
           "id": "additionalInfo",
           "label": "Additional Info",
           "fieldIds": ["businessName", "streetAddress", "city", "country"],
-          "defaultOpen": true,
-          "showAdd": false
+          "defaultOpen": true
         },
         {
           "id": "usedCarBuyerPreferences",
@@ -30,8 +29,7 @@
             "preferredFeatures",
             "referralUrl"
           ],
-          "defaultOpen": false,
-          "showAdd": false
+          "defaultOpen": false
         }
       ]
     },

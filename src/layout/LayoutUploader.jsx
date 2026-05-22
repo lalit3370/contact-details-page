@@ -1,6 +1,7 @@
 import { useContext, useState } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { LayoutOverrideContext } from './LayoutOverrideContext.jsx';
+import { layoutPresets } from './presets.js';
 import styles from './LayoutUploader.module.css';
 
 export function LayoutUploader() {
@@ -9,24 +10,34 @@ export function LayoutUploader() {
   const [text, setText] = useState('');
   const [error, setError] = useState(null);
 
-  const apply = () => {
+  const applyPayload = (payload) => {
+    const next = {};
+    if (payload.panes) next.layout = payload;
+    else if (payload.layout) next.layout = payload.layout;
+    if (payload.fields) next.fields = payload;
+    else if (payload.contactFields) next.fields = payload.contactFields;
+    if (!next.layout && !next.fields) {
+      setError('JSON must contain a "panes" key (layout) or "fields" key (fields catalog).');
+      return;
+    }
+    setOverride(next);
+    setError(null);
+    setOpen(false);
+  };
+
+  const applyText = () => {
     setError(null);
     try {
       const parsed = JSON.parse(text);
-      const next = {};
-      if (parsed.panes) next.layout = parsed;
-      else if (parsed.layout) next.layout = parsed.layout;
-      if (parsed.fields) next.fields = parsed;
-      else if (parsed.contactFields) next.fields = parsed.contactFields;
-      if (!next.layout && !next.fields) {
-        setError('JSON must contain a "panes" key (layout) or "fields" key (fields catalog).');
-        return;
-      }
-      setOverride(next);
-      setOpen(false);
+      applyPayload(parsed);
     } catch (e) {
       setError(`Invalid JSON: ${e.message}`);
     }
+  };
+
+  const applyPreset = (preset) => {
+    setText(JSON.stringify(preset.payload, null, 2));
+    applyPayload(preset.payload);
   };
 
   return (
@@ -47,9 +58,26 @@ export function LayoutUploader() {
           <Dialog.Content className={styles.content} aria-describedby="uploader-desc">
             <Dialog.Title className={styles.title}>Runtime layout / fields override</Dialog.Title>
             <Dialog.Description id="uploader-desc" className={styles.description}>
-              Paste a JSON object with a <code>panes</code> key (for layout) or <code>fields</code>{' '}
-              key (for the fields catalog). Both can be combined in one object.
+              Pick a preset to see the dynamic renderer in action, or paste your own JSON with{' '}
+              <code>panes</code> (layout) and/or <code>fields</code> (catalog) keys.
             </Dialog.Description>
+
+            <div className={styles.presets} aria-label="Demo presets">
+              <span className={styles.presetsLabel}>Quick presets</span>
+              <div className={styles.presetsRow}>
+                {layoutPresets.map((p) => (
+                  <button
+                    key={p.id}
+                    type="button"
+                    className={styles.presetBtn}
+                    title={p.description}
+                    onClick={() => applyPreset(p)}
+                  >
+                    {p.name}
+                  </button>
+                ))}
+              </div>
+            </div>
 
             <textarea
               className={styles.textarea}
@@ -57,6 +85,7 @@ export function LayoutUploader() {
               onChange={(e) => setText(e.target.value)}
               placeholder={EXAMPLE}
               spellCheck="false"
+              aria-label="Custom JSON"
             />
 
             {error ? <p className={styles.error}>{error}</p> : null}
@@ -77,7 +106,7 @@ export function LayoutUploader() {
                 <span className={styles.actionsSpacer} />
               )}
               <Dialog.Close className={styles.btnGhost}>Cancel</Dialog.Close>
-              <button type="button" className={styles.btnPrimary} onClick={apply}>
+              <button type="button" className={styles.btnPrimary} onClick={applyText}>
                 Apply
               </button>
             </div>

@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import { useConversations, useContact } from '../../api/queries.js';
 import { Thread } from './Thread.jsx';
 import { ChatMessage } from './ChatMessage.jsx';
@@ -8,14 +9,17 @@ import { TypingIndicator } from './TypingIndicator.jsx';
 import styles from './Conversations.module.css';
 
 function buildAvatarResolver(contact) {
-  const displayName = contact?.header?.displayName ?? '';
+  const displayName = (contact?.header?.displayName ?? '').trim();
   const avatarUrl = contact?.header?.avatarUrl ?? null;
   if (!displayName || !avatarUrl) return () => null;
-  const lower = displayName.toLowerCase();
+  const lowerFull = displayName.toLowerCase();
+  const firstToken = lowerFull.split(/\s+/)[0];
   return (senderName) => {
     if (!senderName) return null;
-    const s = senderName.toLowerCase();
-    return lower.includes(s) || s.includes(lower) ? avatarUrl : null;
+    const s = senderName.trim().toLowerCase();
+    // Exact-match the full display name, or the first-name token alone.
+    // Avoids substring false positives like "Tom" matching "Thompson".
+    return s === lowerFull || s === firstToken ? avatarUrl : null;
   };
 }
 
@@ -25,6 +29,8 @@ export function Conversations({ contactId }) {
   const avatarFor = buildAvatarResolver(contact);
   const typingName = data?.typing?.[0]?.name ?? null;
   const items = data?.items ?? [];
+  const composerRef = useRef(null);
+  const focusComposer = () => composerRef.current?.focus();
 
   return (
     <section className={styles.pane} aria-label="Conversations">
@@ -49,7 +55,9 @@ export function Conversations({ contactId }) {
         ) : (
           items.map((item) => {
             if (item.kind === 'thread')
-              return <Thread key={item.id} thread={item} avatarFor={avatarFor} />;
+              return (
+                <Thread key={item.id} thread={item} avatarFor={avatarFor} onReply={focusComposer} />
+              );
             if (item.kind === 'chat')
               return <ChatMessage key={item.id} message={item} avatarFor={avatarFor} />;
             return null;
@@ -57,7 +65,7 @@ export function Conversations({ contactId }) {
         )}
       </div>
       {typingName ? <TypingIndicator name={typingName} /> : null}
-      <MessageInput />
+      <MessageInput ref={composerRef} contactId={contactId} />
     </section>
   );
 }

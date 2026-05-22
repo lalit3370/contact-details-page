@@ -2,7 +2,7 @@ import { Avatar } from '../../shared/primitives.jsx';
 import { OrderTrackingCard } from './OrderTrackingCard.jsx';
 import styles from './Conversations.module.css';
 
-export function Message({ message, avatarFor }) {
+export function Message({ message, avatarFor, onReply }) {
   const avatarUrl = avatarFor?.(message.sender?.name) ?? null;
   return (
     <div className={styles.message}>
@@ -32,7 +32,7 @@ export function Message({ message, avatarFor }) {
           att.type === 'orderTracking' ? <OrderTrackingCard key={i} attachment={att} /> : null,
         )}
         {(message.actions ?? []).includes('reply') ? (
-          <button type="button" className={styles.replyButton}>
+          <button type="button" className={styles.replyButton} onClick={onReply}>
             <ReplyArrowIcon /> Reply
           </button>
         ) : null}
