@@ -4,10 +4,11 @@ import { App } from './App.jsx';
 import './styles/base.css';
 
 async function bootstrap() {
-  if (import.meta.env.DEV) {
-    const { worker } = await import('./mocks/browser.js');
-    await worker.start({ onUnhandledRequest: 'bypass' });
-  }
+  const { worker } = await import('./mocks/browser.js');
+  await worker.start({
+    onUnhandledRequest: 'bypass',
+    serviceWorker: { url: `${import.meta.env.BASE_URL}mockServiceWorker.js` },
+  });
 
   createRoot(document.getElementById('root')).render(
     <StrictMode>

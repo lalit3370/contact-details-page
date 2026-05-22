@@ -2,25 +2,27 @@ import { http, HttpResponse, delay } from 'msw';
 
 import layoutData from './data/layout.json';
 import fieldsData from './data/contactFields.json';
-import contact1 from './data/contacts/contact-1.json';
-import contact2 from './data/contacts/contact-2.json';
-import conversations1 from './data/conversations/contact-1.json';
-import conversations2 from './data/conversations/contact-2.json';
-import notes1 from './data/notes/contact-1.json';
-import notes2 from './data/notes/contact-2.json';
+import contact1 from './data/contacts/1.json';
+import contact2 from './data/contacts/2.json';
+import conversations1 from './data/conversations/1.json';
+import conversations2 from './data/conversations/2.json';
+import notes1 from './data/notes/1.json';
+import notes2 from './data/notes/2.json';
 
 const CONTACTS = {
-  'contact-1': contact1,
-  'contact-2': contact2,
+  1: contact1,
+  2: contact2,
 };
 const CONVERSATIONS = {
-  'contact-1': conversations1,
-  'contact-2': conversations2,
+  1: conversations1,
+  2: conversations2,
 };
 const NOTES = {
-  'contact-1': notes1,
-  'contact-2': notes2,
+  1: notes1,
+  2: notes2,
 };
+
+const apiUrl = (path) => `${import.meta.env.BASE_URL}api${path}`;
 
 const latency = () => delay(Math.floor(200 + Math.random() * 200));
 
@@ -35,7 +37,7 @@ function maybeError(request) {
 }
 
 export const handlers = [
-  http.get('/api/contacts', async ({ request }) => {
+  http.get(apiUrl('/contacts'), async ({ request }) => {
     await latency();
     const err = maybeError(request);
     if (err) return err;
@@ -48,7 +50,7 @@ export const handlers = [
     });
   }),
 
-  http.get('/api/contacts/:id', async ({ params, request }) => {
+  http.get(apiUrl('/contacts/:id'), async ({ params, request }) => {
     await latency();
     const err = maybeError(request);
     if (err) return err;
@@ -57,21 +59,21 @@ export const handlers = [
     return HttpResponse.json(contact);
   }),
 
-  http.get('/api/contact/fields', async ({ request }) => {
+  http.get(apiUrl('/contact/fields'), async ({ request }) => {
     await latency();
     const err = maybeError(request);
     if (err) return err;
     return HttpResponse.json(fieldsData);
   }),
 
-  http.get('/api/contact/layout', async ({ request }) => {
+  http.get(apiUrl('/contact/layout'), async ({ request }) => {
     await latency();
     const err = maybeError(request);
     if (err) return err;
     return HttpResponse.json(layoutData);
   }),
 
-  http.get('/api/contacts/:id/conversations', async ({ params, request }) => {
+  http.get(apiUrl('/contacts/:id/conversations'), async ({ params, request }) => {
     await latency();
     const err = maybeError(request);
     if (err) return err;
@@ -79,7 +81,7 @@ export const handlers = [
     return HttpResponse.json(data ?? { threads: [] });
   }),
 
-  http.get('/api/contacts/:id/notes', async ({ params, request }) => {
+  http.get(apiUrl('/contacts/:id/notes'), async ({ params, request }) => {
     await latency();
     const err = maybeError(request);
     if (err) return err;

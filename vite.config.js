@@ -2,7 +2,8 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'node:path';
 
-export default defineConfig({
+export default defineConfig(({ command }) => ({
+  base: command === 'build' ? '/contact-details-page/' : '/',
   plugins: [react()],
   resolve: {
     alias: {
@@ -19,4 +20,4 @@ export default defineConfig({
     setupFiles: ['./src/__tests__/setup.js'],
     css: false,
   },
-});
+}));

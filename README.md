@@ -2,6 +2,8 @@
 
 A dynamic CRM Contact Details page rendered entirely from JSON configs — layout, field catalog, data, conversations, and notes. Built as a take-home for the SDE 3 / Lead Engineer role.
 
+**Live demo:** [projects.lalitkumar.dev/contact-details-page](https://projects.lalitkumar.dev/contact-details-page/)
+
 ## Quickstart
 
 ```bash

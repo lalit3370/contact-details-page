@@ -1,0 +1,85 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - run: npm ci
+
+      - run: npm run build
+
+      # Assemble the deploy tree so the build sits at /contact-details-page/
+      # and a tiny index.html lives at the domain root linking to it.
+      - name: Assemble deploy tree
+        run: |
+          mkdir -p deploy-root
+          mv dist deploy-root/contact-details-page
+          # Move CNAME up so it applies to the whole domain
+          if [ -f deploy-root/contact-details-page/CNAME ]; then
+            mv deploy-root/contact-details-page/CNAME deploy-root/CNAME
+          fi
+          # SPA fallback: GitHub Pages serves 404.html for any unknown URL.
+          # Use the built SPA index as the 404 so deep routes survive hard reloads.
+          cp deploy-root/contact-details-page/index.html deploy-root/404.html
+          cp deploy-root/contact-details-page/index.html deploy-root/contact-details-page/404.html
+          cat > deploy-root/index.html <<'HTML'
+          <!doctype html>
+          <html lang="en">
+            <head>
+              <meta charset="utf-8" />
+              <title>Projects · lalitkumar</title>
+              <meta name="viewport" content="width=device-width,initial-scale=1" />
+              <style>
+                body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+                       max-width: 540px; margin: 80px auto; padding: 0 24px; color: #1f2328; }
+                h1 { font-size: 22px; margin: 0 0 8px; }
+                p { color: #6e7681; }
+                ul { padding-left: 18px; }
+                a { color: #2563eb; text-decoration: none; }
+                a:hover { text-decoration: underline; }
+              </style>
+            </head>
+            <body>
+              <h1>Projects</h1>
+              <p>Things I’ve built.</p>
+              <ul>
+                <li><a href="./contact-details-page/">Contact Details Page</a> — JSON-driven CRM contact panel</li>
+              </ul>
+            </body>
+          </html>
+          HTML
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: deploy-root
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
