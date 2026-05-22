@@ -1,13 +1,32 @@
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
+import { useQueryClient } from '@tanstack/react-query';
 import { useContacts } from '../../api/queries.js';
 import { Avatar, Chip, IconButton } from '../../shared/primitives.jsx';
 import styles from './ContactDetails.module.css';
 
+const OWNER_OPTIONS = [
+  { id: 'devon-lane', name: 'Devon Lane' },
+  { id: 'olivia-perry', name: 'Olivia Perry' },
+  { id: 'brooklyn-simmons', name: 'Brooklyn Simmons' },
+];
+
 export function ContactHeader({ contactId, contact }) {
   const { data: contactsData } = useContacts();
   const navigate = useNavigate();
+  const qc = useQueryClient();
+
+  const updateHeader = (patch) => {
+    qc.setQueryData(['contact', contactId], (prev) =>
+      prev ? { ...prev, header: { ...prev.header, ...patch } } : prev,
+    );
+  };
+
+  const removeTag = (tag) =>
+    updateHeader({ tags: (contact?.header?.tags ?? []).filter((t) => t !== tag) });
+
+  const setOwner = (owner) => updateHeader({ owner });
 
   const { index, total, prevId, nextId } = useMemo(() => {
     const list = contactsData?.contacts ?? [];
@@ -59,7 +78,7 @@ export function ContactHeader({ contactId, contact }) {
       <div className={styles.headerCard}>
         <div className={styles.headerProfile}>
           <Avatar url={header.avatarUrl} name={header.displayName} size={36} />
-          <div className={styles.headerName}>{header.displayName}</div>
+          <h1 className={styles.headerName}>{header.displayName}</h1>
           <IconButton label="Call" className={styles.headerCallBtn}>
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
               <path
@@ -83,15 +102,15 @@ export function ContactHeader({ contactId, contact }) {
               </DropdownMenu.Trigger>
               <DropdownMenu.Portal>
                 <DropdownMenu.Content className={styles.actionMenu} sideOffset={6}>
-                  <DropdownMenu.Item className={styles.actionMenuItem}>
-                    Devon Lane
-                  </DropdownMenu.Item>
-                  <DropdownMenu.Item className={styles.actionMenuItem}>
-                    Olivia Perry
-                  </DropdownMenu.Item>
-                  <DropdownMenu.Item className={styles.actionMenuItem}>
-                    Brooklyn Simmons
-                  </DropdownMenu.Item>
+                  {OWNER_OPTIONS.map((o) => (
+                    <DropdownMenu.Item
+                      key={o.id}
+                      className={styles.actionMenuItem}
+                      onSelect={() => setOwner(o)}
+                    >
+                      {o.name}
+                    </DropdownMenu.Item>
+                  ))}
                 </DropdownMenu.Content>
               </DropdownMenu.Portal>
             </DropdownMenu.Root>
@@ -121,7 +140,12 @@ export function ContactHeader({ contactId, contact }) {
                     <div className={styles.actionMenuEmpty}>No followers yet</div>
                   ) : null}
                   <DropdownMenu.Separator className={styles.actionMenuSep} />
-                  <DropdownMenu.Item className={styles.actionMenuItem}>
+                  <DropdownMenu.Item
+                    className={styles.actionMenuItem}
+                    onSelect={() =>
+                      alert('Add follower\n\nThis action is not wired up in the demo.')
+                    }
+                  >
                     + Add follower
                   </DropdownMenu.Item>
                 </DropdownMenu.Content>
@@ -140,14 +164,19 @@ export function ContactHeader({ contactId, contact }) {
                   type="button"
                   className={styles.tagRemove}
                   aria-label={`Remove tag ${t}`}
-                  onClick={(e) => e.preventDefault()}
+                  onClick={() => removeTag(t)}
                 >
                   ×
                 </button>
               </Chip>
             ))}
             {header.tagsOverflow > 0 ? <Chip>+{header.tagsOverflow}</Chip> : null}
-            <button type="button" className={styles.tagAdd} aria-label="Add tag">
+            <button
+              type="button"
+              className={styles.tagAdd}
+              aria-label="Add tag"
+              onClick={() => alert('Add tag\n\nThis action is not wired up in the demo.')}
+            >
               +
             </button>
           </div>

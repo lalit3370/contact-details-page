@@ -18,6 +18,7 @@ export function Avatar({ url, name, size = 32 }) {
     <span
       className={styles.avatarFallback}
       style={{ width: size, height: size, fontSize: Math.max(10, Math.floor(size * 0.4)) }}
+      role="img"
       aria-label={name ?? 'avatar'}
       title={name}
     >

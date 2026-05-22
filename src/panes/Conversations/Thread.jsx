@@ -1,9 +1,9 @@
 import { Message } from './Message.jsx';
 import styles from './Conversations.module.css';
 
-export function Thread({ thread, avatarFor }) {
+export function Thread({ thread, avatarFor, onReply }) {
   return (
-    <article className={styles.thread}>
+    <section className={styles.thread} aria-label={thread.subject || 'Thread'}>
       <header className={styles.threadHead}>
         <span className={styles.threadSubject} title={thread.subject}>
           {thread.subject}
@@ -25,7 +25,7 @@ export function Thread({ thread, avatarFor }) {
           <span>{thread.messageCount}</span>
         </div>
       ) : null}
-      <Message message={thread.message} avatarFor={avatarFor} />
-    </article>
+      <Message message={thread.message} avatarFor={avatarFor} onReply={onReply} />
+    </section>
   );
 }

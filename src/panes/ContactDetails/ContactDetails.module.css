@@ -79,6 +79,7 @@
 
 .headerName {
   flex: 1;
+  margin: 0;
   font-size: 17px;
   font-weight: 600;
   color: var(--color-text);
@@ -401,6 +402,17 @@
   background: var(--color-bg-elevated);
 }
 
+.folderHeader {
+  display: flex;
+  align-items: stretch;
+  border-radius: var(--radius-md);
+}
+
+.folder[data-state='open'] .folderHeader {
+  border-bottom: 1px solid var(--color-border);
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+}
+
 .folderTrigger {
   appearance: none;
   background: transparent;
@@ -410,22 +422,17 @@
   font-size: var(--font-lg);
   font-weight: 600;
   color: var(--color-text);
-  width: 100%;
+  flex: 1;
   display: flex;
   align-items: center;
   gap: var(--space-2);
   cursor: pointer;
   text-align: left;
-  border-radius: var(--radius-md);
+  border-radius: inherit;
 }
 
 .folderTrigger:hover {
   background: var(--color-bg-subtle);
-}
-
-.folderTrigger[data-state='open'] {
-  border-bottom: 1px solid var(--color-border);
-  border-radius: var(--radius-md) var(--radius-md) 0 0;
 }
 
 .folderLabel {
@@ -433,9 +440,20 @@
 }
 
 .folderAdd {
+  appearance: none;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font: inherit;
   font-size: var(--font-sm);
   font-weight: 500;
   color: var(--color-primary);
+  padding: 0 var(--space-4);
+  border-radius: inherit;
+}
+
+.folderAdd:hover {
+  background: var(--color-bg-subtle);
 }
 
 .folderChevron {

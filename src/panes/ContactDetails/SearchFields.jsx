@@ -2,9 +2,8 @@ import styles from './ContactDetails.module.css';
 
 export function SearchFields({ value, onChange }) {
   return (
-    <div className={styles.searchRow}>
-      <label className={styles.searchInputWrap}>
-        <span className="sr-only">Search Fields and Folders</span>
+    <div className={styles.searchRow} role="search">
+      <div className={styles.searchInputWrap}>
         <svg
           className={styles.searchIcon}
           width="16"
@@ -20,6 +19,7 @@ export function SearchFields({ value, onChange }) {
           type="search"
           className={styles.searchInput}
           placeholder="Search Fields and Folders"
+          aria-label="Search Fields and Folders"
           value={value}
           onChange={(e) => onChange(e.target.value)}
         />
@@ -40,7 +40,7 @@ export function SearchFields({ value, onChange }) {
             />
           </svg>
         </button>
-      </label>
+      </div>
     </div>
   );
 }
