@@ -1,11 +1,30 @@
-import { useConversations } from '../../api/queries.js';
+import { useConversations, useContact } from '../../api/queries.js';
 import { Thread } from './Thread.jsx';
+import { ChatMessage } from './ChatMessage.jsx';
 import { MessageInput } from './MessageInput.jsx';
 import { Skeleton } from '../../shared/primitives.jsx';
+import { TypingIndicator } from './TypingIndicator.jsx';
+
 import styles from './Conversations.module.css';
+
+function buildAvatarResolver(contact) {
+  const displayName = contact?.header?.displayName ?? '';
+  const avatarUrl = contact?.header?.avatarUrl ?? null;
+  if (!displayName || !avatarUrl) return () => null;
+  const lower = displayName.toLowerCase();
+  return (senderName) => {
+    if (!senderName) return null;
+    const s = senderName.toLowerCase();
+    return lower.includes(s) || s.includes(lower) ? avatarUrl : null;
+  };
+}
 
 export function Conversations({ contactId }) {
   const { data, isLoading, isError } = useConversations(contactId);
+  const { data: contact } = useContact(contactId);
+  const avatarFor = buildAvatarResolver(contact);
+  const typingName = data?.typing?.[0]?.name ?? null;
+  const items = data?.items ?? [];
 
   return (
     <section className={styles.pane} aria-label="Conversations">
@@ -25,13 +44,19 @@ export function Conversations({ contactId }) {
           </div>
         ) : isError ? (
           <p className={styles.empty}>Couldn’t load conversations.</p>
-        ) : (data?.threads ?? []).length === 0 ? (
+        ) : items.length === 0 ? (
           <p className={styles.empty}>No conversations yet.</p>
         ) : (
-          data.threads.map((thread) => <Thread key={thread.id} thread={thread} />)
+          items.map((item) => {
+            if (item.kind === 'thread')
+              return <Thread key={item.id} thread={item} avatarFor={avatarFor} />;
+            if (item.kind === 'chat')
+              return <ChatMessage key={item.id} message={item} avatarFor={avatarFor} />;
+            return null;
+          })
         )}
       </div>
-
+      {typingName ? <TypingIndicator name={typingName} /> : null}
       <MessageInput />
     </section>
   );

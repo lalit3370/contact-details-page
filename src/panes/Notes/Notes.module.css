@@ -11,7 +11,6 @@
   align-items: center;
   gap: var(--space-2);
   padding: var(--space-3) var(--space-4);
-  border-bottom: 1px solid var(--color-border);
 }
 
 .headTitle {
@@ -56,6 +55,7 @@
 .body {
   flex: 1;
   overflow-y: auto;
+  scrollbar-gutter: stable;
   padding: var(--space-3) var(--space-4);
   display: flex;
   flex-direction: column;
@@ -78,12 +78,10 @@
   background: var(--color-note-yellow);
   border: 1px solid var(--color-note-yellow-border);
   border-radius: var(--radius-md);
-  padding: var(--space-3);
-  font-size: var(--font-md);
-  line-height: 1.5;
+  padding: var(--space-3) var(--space-4);
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--space-2);
 }
 
 .cardOverdue {
@@ -91,28 +89,22 @@
   border-color: #fca5a5;
 }
 
-.cardTitle {
-  margin: 0;
-  font-size: var(--font-md);
-  font-weight: 600;
-  color: #4a2d00;
-}
-
 .cardMention {
   color: var(--color-primary);
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .cardBody {
   margin: 0;
-  color: #4a2d00;
-  font-size: var(--font-sm);
+  color: var(--color-text);
+  font-size: var(--font-md);
+  line-height: 1.5;
 }
 
 .cardMeta {
   margin: 0;
-  font-size: var(--font-xs);
-  color: #8a6a30;
+  font-size: var(--font-sm);
+  color: var(--color-text-muted);
   display: flex;
   align-items: center;
   gap: var(--space-2);

@@ -12,17 +12,11 @@ export function MessageInput() {
         setValue('');
       }}
     >
-      <button type="button" className={styles.composerIconBtn} aria-label="Attach">
-        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-          <path
-            d="M3 8V4.5C3 3.12 4.12 2 5.5 2C6.88 2 8 3.12 8 4.5V10C8 10.55 7.55 11 7 11C6.45 11 6 10.55 6 10V5"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
+      <button type="button" className={styles.composerType} aria-label="Message type">
+        <EmailIcon />
+        <ChevronDownIcon />
       </button>
+
       <label className={styles.composerInputWrap}>
         <span className="sr-only">Message</span>
         <input
@@ -33,27 +27,65 @@ export function MessageInput() {
           onChange={(e) => setValue(e.target.value)}
         />
       </label>
-      <button type="button" className={styles.composerIconBtn} aria-label="AI">
-        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-          <path d="M8 1L9.5 5.5L14 7L9.5 8.5L8 13L6.5 8.5L2 7L6.5 5.5L8 1Z" opacity=".7" />
-        </svg>
+
+      <button type="button" className={styles.composerAi} aria-label="AI assist">
+        <SparkleIcon />
       </button>
+
       <button
         type="submit"
         className={styles.composerSend}
         aria-label="Send"
         disabled={!value.trim()}
       >
-        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-          <path
-            d="M2 8L14 2L11 14L8 10L2 8Z"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinejoin="round"
-            fill="currentColor"
-          />
-        </svg>
+        <SendIcon />
       </button>
     </form>
+  );
+}
+
+function EmailIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" strokeWidth="1.6" />
+      <path
+        d="M4 7l8 6 8-6"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function ChevronDownIcon() {
+  return (
+    <svg width="10" height="10" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path
+        d="M4 6L8 10L12 6"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function SparkleIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M12 2.5l1.6 5.4 5.4 1.6-5.4 1.6-1.6 5.4-1.6-5.4-5.4-1.6 5.4-1.6L12 2.5z" />
+      <path d="M19 14.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8.8-2.2z" opacity="0.7" />
+    </svg>
+  );
+}
+
+function SendIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M3 11L21 3L13 21L11 13L3 11Z" />
+    </svg>
   );
 }

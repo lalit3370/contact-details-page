@@ -55,13 +55,6 @@ export function PageLayout({ contactId }) {
             </ErrorBoundary>
           );
         })}
-        <aside className={styles.actionRail} aria-label="Quick actions">
-          <RailIcon label="Recent" path="M8 2v6l4 2" />
-          <RailIcon label="Pipeline" path="M3 12L8 7L13 12" />
-          <RailIcon label="Tasks" path="M3 4l3 3l8-8" />
-          <RailIcon label="Notes" path="M3 3h10v10H3z" filled />
-          <RailIcon label="Calendar" path="M3 4h10v9H3z M3 7h10 M6 2v3 M10 2v3" />
-        </aside>
         <LayoutUploader />
       </div>
     </TooltipProvider>
@@ -75,21 +68,5 @@ function PaneErrorFallback({ paneId }) {
         Pane <code>{paneId}</code> failed to render.
       </p>
     </div>
-  );
-}
-
-function RailIcon({ label, path, filled }) {
-  return (
-    <button type="button" className={styles.railBtn} aria-label={label} title={label}>
-      <svg width="16" height="16" viewBox="0 0 16 16" fill={filled ? 'currentColor' : 'none'}>
-        <path
-          d={path}
-          stroke="currentColor"
-          strokeWidth="1.4"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-    </button>
   );
 }

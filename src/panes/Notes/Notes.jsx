@@ -37,18 +37,21 @@ export function Notes({ contactId }) {
 }
 
 function NoteCard({ note }) {
+  const titleWords = note.title ? note.title.split(' ') : null;
   return (
     <article
       className={`${styles.card} ${note.overdue ? styles.cardOverdue : ''}`}
       aria-label={note.title || 'Note'}
     >
-      {note.title ? (
-        <h3 className={styles.cardTitle}>
-          <span className={styles.cardMention}>{note.title.split(' ')[0]}</span>
-          {' ' + note.title.split(' ').slice(1).join(' ')}
-        </h3>
-      ) : null}
-      <p className={styles.cardBody}>{note.body}</p>
+      <p className={styles.cardBody}>
+        {titleWords ? (
+          <>
+            <span className={styles.cardMention}>{titleWords[0]}</span>
+            {' ' + titleWords.slice(1).join(' ') + ' '}
+          </>
+        ) : null}
+        {note.body}
+      </p>
       <p className={styles.cardMeta}>
         {note.timestamp}
         {note.overdue ? <span className={styles.overdueTag}>Overdue</span> : null}

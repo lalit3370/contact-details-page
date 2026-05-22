@@ -2,39 +2,28 @@ import { Avatar } from '../../shared/primitives.jsx';
 import { OrderTrackingCard } from './OrderTrackingCard.jsx';
 import styles from './Conversations.module.css';
 
-export function Message({ message, isReply }) {
-  if (isReply) {
-    return (
-      <div className={styles.replyBubble}>
-        <Avatar name={message.sender?.name} size={20} />
-        <div className={styles.replyContent}>
-          <div className={styles.replySender}>{message.sender?.name}</div>
-          <div className={styles.replyBody}>{message.body}</div>
-          {message.timestamp ? <div className={styles.replyTime}>{message.timestamp}</div> : null}
-        </div>
-      </div>
-    );
-  }
-
+export function Message({ message, avatarFor }) {
+  const avatarUrl = avatarFor?.(message.sender?.name) ?? null;
   return (
     <div className={styles.message}>
-      <Avatar name={message.sender?.name} size={28} />
-      <div className={styles.messageContent}>
-        <div className={styles.messageHead}>
-          <span className={styles.messageSender}>
-            {message.sender?.name}
-            {message.sender?.to ? (
-              <span className={styles.messageTo}> To: {message.sender.to}</span>
-            ) : null}
-          </span>
-          <span className={styles.messageMeta}>
-            <span>{message.timestamp}</span>
-            {message.starred ? <StarIcon /> : null}
-            <ReplyArrowIcon />
-            <KebabIcon />
-          </span>
-        </div>
-        <div className={styles.messageBody}>
+      <header className={styles.messageHead}>
+        <Avatar url={avatarUrl} name={message.sender?.name} size={28} />
+        <span className={styles.messageSender}>
+          {message.sender?.name}
+          {message.sender?.to ? (
+            <span className={styles.messageTo}> To: {message.sender.to}</span>
+          ) : null}
+        </span>
+        <span className={styles.messageMeta}>
+          <span>{message.timestamp}</span>
+          {message.starred ? <StarIcon /> : null}
+          <ReplyArrowIcon />
+          <KebabIcon />
+        </span>
+      </header>
+
+      <div className={styles.messageBody}>
+        <div className={styles.messageText}>
           {message.body.split('\n').map((line, i) => (
             <p key={i}>{line}</p>
           ))}

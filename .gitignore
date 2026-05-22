@@ -144,3 +144,6 @@ vite.config.ts.timestamp-*
 
 # Local design-verification snapshots
 .snapshots/
+
+# macOS
+.DS_Store

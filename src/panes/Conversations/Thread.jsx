@@ -1,8 +1,7 @@
 import { Message } from './Message.jsx';
-import { TypingIndicator } from './TypingIndicator.jsx';
 import styles from './Conversations.module.css';
 
-export function Thread({ thread }) {
+export function Thread({ thread, avatarFor }) {
   return (
     <article className={styles.thread}>
       <header className={styles.threadHead}>
@@ -21,21 +20,12 @@ export function Thread({ thread }) {
           </svg>
         </button>
       </header>
-
-      <div className={styles.threadMessages}>
-        {(thread.messages ?? []).map((m, i) => (
-          <Message
-            key={m.id}
-            message={m}
-            isReply={
-              i > 0 &&
-              (thread.messages[i - 1].sender?.name !== m.sender?.name || m.timestamp?.includes(':'))
-            }
-          />
-        ))}
-      </div>
-
-      {(thread.typing ?? []).length > 0 ? <TypingIndicator names={thread.typing} /> : null}
+      {thread.messageCount ? (
+        <div className={styles.threadCount} aria-hidden="true">
+          <span>{thread.messageCount}</span>
+        </div>
+      ) : null}
+      <Message message={thread.message} avatarFor={avatarFor} />
     </article>
   );
 }

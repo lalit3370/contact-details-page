@@ -4,6 +4,7 @@
   display: flex;
   flex-direction: column;
   overflow-y: auto;
+  scrollbar-gutter: stable;
   font-size: var(--font-md);
 }
 
