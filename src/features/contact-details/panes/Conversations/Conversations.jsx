@@ -4,6 +4,7 @@ import { Thread } from './Thread.jsx';
 import { ChatMessage } from './ChatMessage.jsx';
 import { MessageInput } from './MessageInput.jsx';
 import { Skeleton } from '@/shared/primitives.jsx';
+import { PaneError } from '@/shared/PaneError.jsx';
 import { TypingIndicator } from './TypingIndicator.jsx';
 import { buildAvatarResolver } from '@/shared/utils.js';
 
@@ -35,12 +36,7 @@ export function Conversations({ contactId }) {
             <Skeleton height={120} radius={8} />
           </div>
         ) : isError ? (
-          <div className={styles.empty} role="alert">
-            <p>Couldn’t load conversations.</p>
-            <button type="button" className={styles.retryBtn} onClick={() => refetch()}>
-              Try again
-            </button>
-          </div>
+          <PaneError message="Couldn’t load conversations." onRetry={refetch} />
         ) : items.length === 0 ? (
           <p className={styles.empty}>No conversations yet.</p>
         ) : (

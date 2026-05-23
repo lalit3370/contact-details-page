@@ -1,6 +1,7 @@
 import { useNotes } from '../../api/queries.js';
 import { notImplemented } from '@/shared/utils.js';
 import { Skeleton } from '@/shared/primitives.jsx';
+import { PaneError } from '@/shared/PaneError.jsx';
 import styles from './Notes.module.css';
 
 export function Notes({ contactId }) {
@@ -31,12 +32,7 @@ export function Notes({ contactId }) {
             <Skeleton height={100} radius={6} />
           </div>
         ) : isError ? (
-          <div className={styles.empty} role="alert">
-            <p>Couldn’t load notes.</p>
-            <button type="button" className={styles.retryBtn} onClick={() => refetch()}>
-              Try again
-            </button>
-          </div>
+          <PaneError message="Couldn’t load notes." onRetry={refetch} />
         ) : (data?.notes ?? []).length === 0 ? (
           <p className={styles.empty}>No notes yet.</p>
         ) : (
