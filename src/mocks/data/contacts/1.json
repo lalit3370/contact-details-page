@@ -11,7 +11,8 @@
     ],
     "tags": ["Shared Contact", "VIP"],
     "tagsOverflow": 15,
-    "dnd": false
+    "dnd": false,
+    "dndChannels": { "sms": false, "email": true, "calls": false, "push": false }
   },
   "fields": {
     "firstName": "Olivia",

@@ -4,24 +4,26 @@ import styles from './ContactDetails.module.css';
 const notImplemented = (label) => () =>
   alert(`${label}\n\nThis action is not wired up in the demo.`);
 
-export function ActionBar({ dnd, onToggleDnd }) {
+export function ActionBar({ view, onChangeView, dndOn }) {
   return (
     <div className={styles.actionBarWrap}>
       <div className={styles.actionBar} role="toolbar" aria-label="Contact view options">
         <button
           type="button"
-          className={`${styles.actionTab} ${styles.actionTabActive}`}
-          aria-current="page"
+          className={`${styles.actionTab} ${view === 'fields' ? styles.actionTabActive : ''}`}
+          aria-pressed={view === 'fields'}
+          onClick={() => onChangeView('fields')}
         >
           All Fields
         </button>
         <button
           type="button"
-          className={`${styles.actionTab} ${dnd ? styles.actionTabActive : ''}`}
-          onClick={onToggleDnd}
-          aria-pressed={Boolean(dnd)}
+          className={`${styles.actionTab} ${view === 'dnd' ? styles.actionTabActive : ''}`}
+          aria-pressed={view === 'dnd'}
+          onClick={() => onChangeView('dnd')}
         >
           DND
+          {dndOn ? <span className={styles.actionTabDot} aria-hidden="true" /> : null}
         </button>
         <DropdownMenu.Root>
           <DropdownMenu.Trigger className={styles.actionTab}>Actions</DropdownMenu.Trigger>
