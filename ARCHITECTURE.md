@@ -2,55 +2,70 @@
 
 ## Architecture Overview
 
-A single-page React app rendering a CRM contact details view from JSON configuration. Layout, field catalog, and per-contact data load through MSW-backed endpoints and join in the component tree via a resolver hook. Three panes — Contact Details, Conversations, Notes — are dispatched from a pane registry; field rendering is dispatched from a field registry keyed by type id.
+A single-page React app rendering a CRM-style contact details experience from JSON configuration. Layout structure, field definitions, and entity data are loaded through MSW-backed endpoints and composed in the UI through resolver hooks.
 
-## Tech Stack
+The application is organized around three independently rendered panes:
 
-| Concern         | Choice                                                |
-| --------------- | ----------------------------------------------------- |
-| Framework       | React 18 + Vite 6                                     |
-| Language        | JavaScript                                            |
-| Routing         | `react-router-dom` v6                                 |
-| Server state    | `@tanstack/react-query` v5                            |
-| Local state     | `useState` + one React Context for layout override    |
-| Styling         | CSS Modules + design tokens                           |
-| A11y primitives | Radix UI (Dialog, Collapsible, DropdownMenu, Tooltip) |
-| Mocking         | MSW v2 (browser worker, runs in dev and prod)         |
-| Testing         | Vitest + React Testing Library                        |
+- Contact Details
+- Conversations
+- Notes
 
-## Application Structure
+Rendering is configuration-driven at multiple levels:
 
-```
+- panes dispatch through a pane registry
+- contact views dispatch through a view registry
+- fields dispatch through a field registry keyed by type id
+
+---
+
+# Tech Stack
+
+| Concern                  | Choice                                              |
+| ------------------------ | --------------------------------------------------- |
+| Framework                | React 18 + Vite 6                                   |
+| Language                 | JavaScript                                          |
+| Routing                  | `react-router-dom` v6                               |
+| Server state             | `@tanstack/react-query` v5                          |
+| Local state              | `useState` + one React Context for layout overrides |
+| Styling                  | CSS Modules + design tokens                         |
+| Accessibility primitives | Radix UI                                            |
+| Mocking                  | MSW v2                                              |
+| Testing                  | Vitest + React Testing Library                      |
+
+---
+
+# Application Structure
+
+```txt
 src/
 ├── index.jsx                  Entry — MSW boot + React root mount
 ├── app/                       App shell — providers, router, QueryClient, 404
-├── features/                  Feature modules — one folder per product area
+├── features/
 │   └── contact-details/
-│       ├── api/               Query hooks + queryKeys factory
-│       ├── layout/            PageLayout, paneRegistry, paneTypes, override + uploader
+│       ├── api/               Query hooks + queryKeys
+│       ├── layout/            PageLayout, registries, overrides
 │       ├── panes/
-│       │   ├── ContactDetails/    Header, ActionBar, Folder, FieldRow + fields/
-│       │   │   └── views/         FoldersView, DndView, viewRegistry
-│       │   ├── Conversations/     Pane + Thread/Message/MessageInput
-│       │   ├── Notes/             Pane + NoteCard
-│       │   └── skeletons/         Per-pane loading skeletons
-│       ├── routes/            Route components
-│       └── __tests__/         Vitest specs
-├── shared/                    Primitives + Icons + PaneError + utils
-├── mocks/                     MSW worker + handlers + JSON fixtures
-├── styles/                    Reset + design tokens
+│       │   ├── ContactDetails/
+│       │   ├── Conversations/
+│       │   ├── Notes/
+│       │   └── skeletons/
+│       ├── routes/
+│       └── __tests__/
+├── shared/                    Shared primitives, icons, utilities
+├── mocks/                     MSW handlers + JSON fixtures
+├── styles/                    Global styles + tokens
 └── test/                      Vitest setup
 ```
 
-Three layers:
+- **`index.jsx` + `app/`** own application bootstrapping, providers, and routing.
+- **`features/<name>/`** owns rendering, composition, routes, registries, and data concerns for a product area.
+- **`shared/`** contains primitives reused across features. Feature-specific code remains local to the feature.
 
-- **`index.jsx` + `app/`** own bootstrapping, the provider tree, and the router. A second feature adds a route here; nothing else changes.
-- **`features/<name>/`** owns rendering, composition, registries, query hooks, and routes for one product area. Self-contained.
-- **`shared/`** holds primitives reused by multiple features. Single-feature code stays inside the feature.
+Cross-feature imports use the `@/` alias; intra-feature imports remain relative.
 
-Cross-boundary imports use the `@/` alias (`@/shared/primitives.jsx`, `@/features/...`); intra-feature imports stay relative. New features live at `features/<name>/` with the same shape.
+---
 
-## Data Flow
+# Routing
 
 | Path                          | Component                        |
 | ----------------------------- | -------------------------------- |
@@ -58,232 +73,325 @@ Cross-boundary imports use the `@/` alias (`@/shared/primitives.jsx`, `@/feature
 | `/contact/details/:contactId` | `ContactDetailsRoute`            |
 | `*`                           | `NotFoundRoute`                  |
 
+The router basename derives from `import.meta.env.BASE_URL`, allowing the same codebase to run both locally and under a production subpath.
+
+---
+
+# Data Flow
+
+```txt
+JSON (mocks/data)
+    ↓
+MSW handlers
+    ↓
+Query hooks
+    ↓
+Resolver hooks
+    ↓
+Pane components
+    ↓
+Field / activity renderers
 ```
-JSON (mocks/data) → MSW handler → Query hook
-   → Resolver hook (useResolvedFolders)
-   → Pane (via paneRegistry)
-   → FieldRow (via fieldRegistry)
-   → Field component
-```
 
-Composition happens once, in `useResolvedFolders` — it joins layout × field catalog × contact data into folder rows. Components below the pane level receive props only; they never call `useQuery`.
+Composition happens once inside resolver hooks.
 
-## Rendering Architecture
+For the Contact Details pane, `useResolvedFolders` joins:
 
-Three registries drive composition from JSON:
+- layout configuration
+- field definitions
+- contact entity data
 
-- **Pane registry** maps `pane.type` → component. `PageLayout` iterates `layout.panes` and dispatches.
-- **View registry** maps a `views[].id` inside the `contactDetails` pane → component (`fields` → `FoldersView`, `dnd` → `DndView`). The pane's `views` and `actions` arrays drive the ActionBar tabs and Actions menu.
-- **Field registry** maps 12 field type ids → 7 components. Type families that share rendering share a component and branch on a prop.
+Components below the pane level receive props only and do not fetch data directly.
 
-Adding a pane, view, or field type is a registry entry plus a component — no `switch` statements in render code.
+---
 
-## Accessibility
+# Rendering Architecture
 
-Radix UI provides a11y-heavy primitives (Dialog, Collapsible, DropdownMenu, Tooltip) so focus traps, escape handling, and ARIA wiring come from the library. Markup uses semantic elements (`section`, `article`, `header`, `h1`) with `role="toolbar"`/`role="search"` where the underlying element is generic. Inline-edit fields commit on Enter, revert on Escape, and remain reachable by keyboard alone.
+Three registries drive rendering from configuration:
 
-## State Management
+## Pane Registry
 
-| State                         | Owner                                    |
-| ----------------------------- | ---------------------------------------- |
-| Server data + in-memory edits | TanStack Query cache                     |
-| Per-field edit mode, drafts   | Local `useState` in the field component  |
-| Folder collapse, search input | Local `useState` in the owning component |
-| Runtime layout/field override | `LayoutOverrideContext`                  |
+Maps `pane.type` → pane component.
 
-Edits write through `queryClient.setQueryData`; the cache is the source of truth. One Context exists because the uploader injects overrides from outside the consuming subtree.
+`PageLayout` iterates `layout.panes` and dispatches rendering through the registry.
 
-## Configuration Model
+---
 
-Six JSON files drive the UI. Pane order, folder grouping, field width, and visibility are JSON edits — the runtime uploader swaps any of them in-memory via the override context.
+## View Registry
 
-### `layout.json` — pane order + folder grouping
+Inside the Contact Details pane, `view.id` maps to a view component.
 
-```jsonc
+This allows the pane to switch between:
+
+- field views
+- DND views
+- future views
+
+without changing pane composition logic.
+
+---
+
+## Field Registry
+
+Maps field type ids → renderer components.
+
+Example field types:
+
+- `string`
+- `email`
+- `currency`
+- `boolean`
+- `multi-select`
+
+Related field families share renderer components where rendering behavior is equivalent.
+
+Adding a pane, view, or field type requires:
+
+1. a component
+2. a registry entry
+
+No render-time `switch` statements are required.
+
+---
+
+# Accessibility
+
+Radix UI is used for accessibility-sensitive primitives such as:
+
+- dialogs
+- dropdown menus
+- tooltips
+- collapsible regions
+
+Semantic HTML is used throughout (`section`, `article`, `header`, `button`, `input`), with keyboard-accessible editing flows and visible focus states.
+
+Inline field editing supports:
+
+- Enter to commit
+- Escape to cancel
+- full keyboard navigation
+
+---
+
+# State Management
+
+| State                      | Owner                   |
+| -------------------------- | ----------------------- |
+| Server data + cached edits | TanStack Query cache    |
+| Field editing state        | Local component state   |
+| Folder collapse state      | Local component state   |
+| Search input               | Local component state   |
+| Runtime layout overrides   | `LayoutOverrideContext` |
+
+Edits write directly into the Query cache through `queryClient.setQueryData`, making the cache the single source of truth for server-backed state.
+
+The single Context exists to support runtime layout overrides across the feature subtree.
+
+---
+
+# Configuration Model
+
+Configuration is split into three layers:
+
+- **Layout configuration** — pane order, folder grouping, view structure
+- **Field definitions** — field semantics and rendering metadata
+- **Entity data** — contacts, conversations, notes, and reference entities
+
+This separation keeps rendering structure independent from entity content while allowing the UI to remain fully configuration-driven.
+
+---
+
+## `layout.json`
+
+Defines page composition and rendering structure.
+
+```json
 {
   "panes": [
     {
       "id": "contactDetails",
-      "type": "contactDetails", // dispatched via paneRegistry
+      "type": "contactDetails",
       "views": [
-        // tab list in the ActionBar
-        { "id": "fields", "label": "All Fields" }, // id is bound to a component via viewRegistry
-        { "id": "dnd", "label": "DND" }, // omitted → falls back to defaults in code
-      ],
-      "actions": [
-        // entries in the Actions dropdown
-        { "id": "send-email", "label": "Send email" },
-        { "id": "delete", "label": "Delete", "variant": "danger" }, // variant=danger → red, auto-separator
+        { "id": "fields", "label": "All Fields" },
+        { "id": "dnd", "label": "DND" }
       ],
       "folders": [
         {
           "id": "contact",
           "label": "Contact",
-          "fieldIds": ["firstName", "lastName", "phone", "email"], // → contactFields keys
-          "defaultOpen": true, // optional, default true
-          "showAdd": true, // optional, renders the "+ Add" affordance
-        },
-      ],
+          "fieldIds": ["firstName", "lastName", "phone"]
+        }
+      ]
     },
-    { "id": "conversations", "type": "conversations" }, // bare panes — no config
-    { "id": "notes", "type": "notes" },
-  ],
+    { "id": "conversations", "type": "conversations" },
+    { "id": "notes", "type": "notes" }
+  ]
 }
 ```
 
-`pane.type` must match a `paneRegistry` key (`contactDetails | conversations | notes`); unknown types render a dev-only console warning and are skipped.
+- `pane.type` dispatches through `paneRegistry`
+- `views[].id` dispatches through `viewRegistry`
+- folders control grouping and field order
 
-### `contactFields.json` — field catalog
+---
 
-```jsonc
+## `contactFields.json`
+
+Defines field semantics and renderer metadata.
+
+```json
 {
   "fields": {
-    "firstName": { "label": "First Name", "type": "string", "width": "half" },
-    "budget": { "label": "Budget", "type": "currency", "currency": "USD" },
-    "preferredMake": {
-      "label": "Preferred Make",
-      "type": "radio",
-      "options": ["Toyota", "Honda", "Ford"],
+    "firstName": {
+      "label": "First Name",
+      "type": "string",
+      "width": "half"
     },
-  },
+    "budget": {
+      "label": "Budget",
+      "type": "currency",
+      "currency": "USD"
+    }
+  }
 }
 ```
 
-| Key        | Required | Notes                                              |
-| ---------- | -------- | -------------------------------------------------- |
-| `label`    | ✓        | Display string                                     |
-| `type`     | ✓        | One of 12 type ids (see below)                     |
-| `width`    | —        | `"half"` for side-by-side layout; default full-row |
-| `options`  | —        | Required for `radio` and `multi-select`            |
-| `currency` | —        | ISO code for `currency`; defaults to `USD`         |
+Field rendering is driven by `type`, which maps through `fieldRegistry`.
 
-Supported `type` ids: `string`, `email`, `url`, `textarea`, `phone`, `number`, `currency`, `date`, `radio`, `multi-select`, `boolean`, `tags`. The 12 ids map to 7 components via `fieldRegistry`.
+---
 
-### `contacts/{id}.json` — per-contact header + field values
+## `contacts/{id}.json`
 
-```jsonc
+Defines contact-specific entity data.
+
+```json
 {
   "id": "1",
   "header": {
-    "avatarUrl": "https://i.pravatar.cc/160?img=47", // nullable → falls back to initials
     "displayName": "Olivia John",
-    "owner": { "id": "devon-lane", "name": "Devon Lane" }, // → references owners.json by id
-    "followers": [{ "id": "u1", "name": "Brooklyn Simmons" }],
-    "tags": ["Shared Contact", "VIP"],
-    "tagsOverflow": 15, // shown as a "+N" chip
-    "dnd": false,
-    "dndChannels": { "sms": false, "email": true, "calls": false, "push": false },
+    "owner": {
+      "id": "devon-lane",
+      "name": "Devon Lane"
+    }
   },
   "fields": {
-    "firstName": "Olivia", // values keyed by contactFields ids
-    "budget": 35000,
-    "tradein": true,
-    "preferredFeatures": ["Apple CarPlay", "Heated Seats"],
-  },
+    "firstName": "Olivia",
+    "budget": 35000
+  }
 }
 ```
 
-`fields` keys must exist in `contactFields.json`; missing definitions log a dev warning and skip the row. Value types track the field's `type` — string for text/email/url/phone/date/radio, number for number/currency, boolean for boolean, array for multi-select/tags.
+The `header` section models identity and relationship metadata rendered through dedicated UI primitives. `fields` contains values keyed by `contactFields` ids.
 
-### `owners.json` — account-wide owner pool
+---
 
-```jsonc
+## `owners.json`
+
+Defines account-scoped owner entities referenced by contacts.
+
+```json
 {
   "owners": [
-    { "id": "devon-lane", "name": "Devon Lane" },
-    { "id": "olivia-perry", "name": "Olivia Perry" },
-  ],
+    {
+      "id": "devon-lane",
+      "name": "Devon Lane"
+    }
+  ]
 }
 ```
 
-Account-scoped, not per-contact — every contact's `owner` field references an entry here by `id`. Matches how production CRMs (HubSpot's `/crm/v3/owners`, Salesforce's `User` object) model owner selection: pool fetched once, records hold a foreign key. Permission filtering (who can be assigned which records) would layer on top of this in a real product.
+---
 
-### `conversations/{id}.json` — timeline items + typing state
+## `conversations/{id}.json`
 
-```jsonc
+Defines heterogeneous timeline items for the Conversations pane.
+
+```json
 {
   "items": [
     {
-      "kind": "thread", // email-style thread with one preview message
-      "id": "t1",
-      "subject": "Set up a new time…",
-      "messageCount": 3,
-      "message": {
-        "id": "m1",
-        "sender": { "name": "Olivia John", "to": "Me", "avatar": null },
-        "timestamp": "5 min ago",
-        "starred": true,
-        "body": "Hey John,\n\n…",
-        "attachments": [
-          { "type": "orderTracking", "orderId": "UW-12345", "label": "Track Your Order" },
-        ],
-        "actions": ["reply"], // reserved; currently only "reply" is rendered
-      },
+      "kind": "thread",
+      "id": "t1"
     },
     {
-      "kind": "chat", // single chat bubble, no thread
-      "id": "c1",
-      "sender": { "name": "Olivia", "avatar": null },
-      "timestamp": "11:44 AM",
-      "body": "Please let me know",
-    },
-  ],
-  "typing": [{ "name": "Olivia" }], // optional; shown as a typing indicator
+      "kind": "chat",
+      "id": "c1"
+    }
+  ]
 }
 ```
 
-`items[].kind` is a discriminated union (`thread | chat`) — threads and chats are timeline siblings, never nested.
+Timeline rendering is driven by `kind`, allowing multiple activity types to coexist within the same stream.
 
-### `notes/{id}.json` — flat note list
+---
 
-```jsonc
+## `notes/{id}.json`
+
+Defines a flat note collection rendered by the Notes pane.
+
+```json
 {
   "notes": [
     {
       "id": "n1",
-      "title": "@Aaron Site Inspection completed.", // nullable; mention is the first whitespace-delimited token
-      "body": "Heavy moss buildup on north side…",
-      "timestamp": "2 hours ago",
-      "overdue": false, // overdue notes get an "Overdue" pill
-    },
-  ],
+      "body": "Heavy moss buildup..."
+    }
+  ]
 }
 ```
 
-## Design Decisions
+---
 
-| Decision        | Choice                               | Rationale                                                         |
-| --------------- | ------------------------------------ | ----------------------------------------------------------------- |
-| Server state    | TanStack Query                       | Cache doubles as the edit store via `setQueryData`                |
-| Field rendering | Registry, 12 type ids → 7 components | Share a component when rendering is identical; branch on props    |
-| Pane rendering  | Registry                             | Layout JSON drives order and visibility without component changes |
-| Conversations   | `items[]` with `kind`                | Threads and chats are timeline siblings, not nested               |
-| Layout override | Single Context                       | Uploader injects from outside the consuming subtree               |
+# Design Decisions
 
-## Error Handling
+| Decision            | Choice                | Rationale                                                       |
+| ------------------- | --------------------- | --------------------------------------------------------------- |
+| Server state        | TanStack Query        | Cache doubles as the edit store via `setQueryData`              |
+| Pane rendering      | Registry-driven       | Layout JSON controls pane composition                           |
+| Field rendering     | Registry-driven       | Rendering stays configuration-driven and extensible             |
+| Conversations model | `items[]` with `kind` | Different activity types coexist in one timeline                |
+| Layout overrides    | Single Context        | Runtime overrides need shared access across the feature subtree |
 
-Three boundaries:
+---
 
-- **Top-level** (`AppProviders`) — catches anything past the panes.
-- **Per-pane** (`PageLayout`) — a failing pane shows an inline fallback; siblings stay live.
-- **In-tree fallbacks** — unknown pane/field types degrade gracefully with a dev warning.
+# Error Handling
 
-`isError` is surfaced per pane, so one failed endpoint never collapses the page.
+Three boundary layers isolate failures:
 
-## Performance
+- **Top-level boundary** catches failures escaping the feature tree
+- **Per-pane boundaries** isolate rendering failures to a single pane
+- **In-tree fallbacks** handle unknown pane or field types gracefully
 
-- `useResolvedFolders` memoizes against layout × fields × contact slices.
-- Field edit state is local — editing one field doesn't rerender siblings.
-- TanStack Query's structural sharing scopes rerenders to changed cache slices.
+Query errors surface independently per pane, so one failed endpoint does not collapse the page.
 
-## Testing
+---
 
-Vitest + RTL. Three specs cover the load-bearing seams:
+# Performance
 
-- **`fieldRegistry.test`** — every registered type renders.
-- **`useResolvedFolders.test`** — happy join, missing field def, layout without `contactDetails`.
-- **`ContactDetails.test`** — full render with mocked providers.
+- Resolver hooks memoize against relevant cache slices
+- Field editing state remains local to avoid sibling rerenders
+- TanStack Query structural sharing scopes rerenders to changed data only
 
-## Deployment
+---
 
-GitHub Pages at `projects.lalitkumar.dev`. The app serves from the domain root, so router, MSW worker URL, and API paths are all plain root-relative. `index.html` is copied to `404.html` so deep links survive a hard reload. MSW ships in production — it is the demo's backend.
+# Testing
+
+Vitest + React Testing Library.
+
+Tests focus on:
+
+- registry-driven rendering
+- resolver hook composition
+- full pane rendering with mocked providers
+
+---
+
+# Deployment
+
+The app deploys to GitHub Pages.
+
+Router basename, MSW worker URL, and API paths derive from `import.meta.env.BASE_URL`, allowing the same build to run locally and under a production subpath.
+
+`index.html` is copied to `404.html` so deep links resolve correctly in the SPA environment.
+
+MSW ships in production as the demo backend.

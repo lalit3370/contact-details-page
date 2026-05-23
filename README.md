@@ -3,89 +3,175 @@
 [![Deploy](https://github.com/lalit3370/contact-details-page/actions/workflows/deploy.yml/badge.svg)](https://github.com/lalit3370/contact-details-page/actions/workflows/deploy.yml)
 [![Live](https://img.shields.io/badge/live-projects.lalitkumar.dev-2563eb)](https://projects.lalitkumar.dev/)
 
-A CRM contact details page rendered entirely from JSON — layout, field catalog, contact data, conversations, notes. Reshape the UI by editing JSON; no code changes.
+A config-driven CRM contact details experience built with React.
+Layout structure, field definitions, conversations, and notes are rendered entirely from JSON configuration.
+
+The application demonstrates:
+
+- dynamic UI composition
+- registry-driven rendering
+- feature-oriented frontend architecture
+- MSW-backed API simulation
+- in-memory editing through TanStack Query
 
 **Live:** [projects.lalitkumar.dev](https://projects.lalitkumar.dev/)
 **Architecture:** [`ARCHITECTURE.md`](./ARCHITECTURE.md)
 
-## Quickstart
+---
+
+# Quickstart
 
 ```bash
 npm install
 npm run dev
 ```
 
-Dev server on `http://localhost:5173`. Two mocked contacts (`/contact/details/1`, `/contact/details/2`); prev/next in the header navigates between them. MSW intercepts `/api/*` in-browser — no backend to run.
+Local development runs at:
 
-## Tech stack
-
-| Concern         | Choice                                                |
-| --------------- | ----------------------------------------------------- |
-| Framework       | React 18 + Vite 6                                     |
-| Routing         | `react-router-dom` v6                                 |
-| Server state    | `@tanstack/react-query` v5                            |
-| Mocking         | MSW v2 (runs in dev and prod)                         |
-| Styling         | CSS Modules + design tokens                           |
-| A11y primitives | Radix UI (Dialog, Collapsible, DropdownMenu, Tooltip) |
-| Testing         | Vitest + React Testing Library                        |
-| Lint / format   | ESLint + Prettier (Husky enforces pre-commit)         |
-
-Not in the tree: Redux/Zustand, MUI/Ant Design/Chakra, styled-components/Emotion, i18n libraries.
-
-## JSON configs
-
-Six files drive the UI. Editing them is the supported way to change the page.
-
-| File                      | Purpose                                                   |
-| ------------------------- | --------------------------------------------------------- |
-| `layout.json`             | Pane order; folders + field ids per pane                  |
-| `contactFields.json`      | Field catalog (label, type, optional width/options)       |
-| `contacts/{id}.json`      | Per-contact header + values keyed by field id             |
-| `owners.json`             | Account-wide owner pool; contact `owner` references by id |
-| `conversations/{id}.json` | `items[]` of `kind: thread \| chat`                       |
-| `notes/{id}.json`         | `notes[]`                                                 |
-
-Supported field types: `string`, `email`, `url`, `textarea`, `phone`, `number`, `currency`, `date`, `radio`, `multi-select`, `boolean`, `tags`.
-
-The runtime uploader (FAB, bottom-right) accepts a custom `layout` and/or `fields` payload and re-renders the page against it without a reload.
-
-## Scripts
-
-```bash
-npm run dev          # Vite dev server
-npm test             # Vitest run
-npm run test:watch   # Vitest watch
-npm run lint         # ESLint
-npm run format       # Prettier
-npm run build        # Production build → dist/
-npm run preview      # Serve the build
+```txt id="vtr2p3"
+http://localhost:5173
 ```
 
-## Workflow
+Two mocked contacts are available:
 
-- **Pre-commit:** Husky runs `lint-staged` — ESLint, Prettier, and `vitest related` against changed files. Broken or unformatted code can't reach `main` via a normal commit.
-- **Commit messages:** Conventional Commits, enforced by `commitlint`. Type from `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`. Subject ≤ 100 chars.
+```txt id="evd2qm"
+/contact/details/1
+/contact/details/2
+```
 
-## Deployment
+MSW intercepts `/api/*` requests in-browser, so no backend process is required.
 
-Push to `main` → `.github/workflows/deploy.yml` runs `npm run build`, copies `dist/index.html` to `dist/404.html` (so SPA deep links survive a hard reload), and publishes `dist/` to GitHub Pages. DNS: one CNAME, `projects → lalit3370.github.io`. Final URL: `projects.lalitkumar.dev`.
+---
 
-## Trade-offs
+# Tech Stack
 
-- **Edits are in-memory.** Spec says no form submissions; refresh resets everything.
-- **MSW ships in production** (~280 KB). It is the demo's backend; a real product would make it dev-only.
-- **Service worker idle eviction.** MSW is a service worker, and browsers kill idle SWs after ~30s of no fetches. If you leave the tab open and idle for a minute, then navigate, the first batch of `/api/*` calls can bypass MSW and 404 against GitHub Pages. A page refresh re-registers the worker. Real product fixes: re-register handlers on visibility change + a periodic heartbeat, or wrap fetches with a retry that re-arms MSW. Out of scope for the demo since the failure is transient and recoverable.
-- **Some buttons are decorative.** These open an `alert('… not wired up in the demo.')` to convey surface area without a backend:
-  - Actions dropdown items (Send email, Log a call, Add task, Delete)
-  - Search row Filter button
-  - Each Folder's `+ Add` affordance
-  - Notes pane `+ Add` and close (`×`)
-  - Header `+ Add follower`, `+` add-tag chip, and `Call` quick-action
+| Concern                  | Choice                         |
+| ------------------------ | ------------------------------ |
+| Framework                | React 18 + Vite 6              |
+| Routing                  | `react-router-dom` v6          |
+| Server state             | `@tanstack/react-query` v5     |
+| Mocking                  | MSW v2                         |
+| Styling                  | CSS Modules + design tokens    |
+| Accessibility primitives | Radix UI                       |
+| Testing                  | Vitest + React Testing Library |
 
-  These _are_ wired (in-memory only, lost on refresh): inline field edits, the DND switch and channel toggles, tag remove (`×`), the message composer Send (appends to the conversations cache), per-message Reply (focuses the composer), and the back / prev / next contact navigation.
+---
 
-- **Header `←` back uses `navigate(-1)`.** Fine for in-app navigation, but if the user lands on the page via a deep link, refresh, or share URL, popping history may exit the app or do nothing predictable. A real product would track in-app history depth and fall back to a contacts list (or disable the button) when none exists.
-- **No real-time transport for Conversations.** A real CRM pushes chat messages, typing indicators, read receipts, and presence over a WebSocket (Intercom, HubSpot, Salesforce all do; email-style threads can tolerate 30–60s polling). Incoming updates would flow into the same TanStack Query cache via `setQueryData`, so the render path is unchanged. The demo fetches once on mount, appends locally on send, and renders the static `typing` field from the JSON as-is.
-- **Two contacts** wired (`1`, `2`). Add more by dropping JSON files under `mocks/data/contacts/`.
-- **No i18n.** Strings are English; JSON labels are literal display strings.
-- **Deep URLs return HTTP 404** on Pages even though the SPA renders correctly. GitHub Pages has no server-side rewrite — the SPA boots from the 404.html body. Cosmetic only.
+# Project Structure
+
+```txt id="31vk0o"
+src/
+├── index.jsx
+├── app/
+├── features/
+│   └── contact-details/
+├── shared/
+├── mocks/
+├── styles/
+└── test/
+```
+
+- `app/` owns application bootstrapping, providers, and routing
+- `features/` owns product areas and feature-local composition
+- `shared/` contains reusable primitives shared across features
+- `mocks/` contains MSW handlers and JSON fixtures
+
+The repository is organized around feature ownership rather than page-level grouping.
+
+---
+
+# Configuration Model
+
+The UI is driven by JSON configuration under `mocks/data/`.
+
+| File                      | Responsibility                                    |
+| ------------------------- | ------------------------------------------------- |
+| `layout.json`             | Pane composition, folder grouping, view structure |
+| `contactFields.json`      | Field definitions and renderer metadata           |
+| `contacts/{id}.json`      | Contact entity data                               |
+| `owners.json`             | Shared owner entities                             |
+| `conversations/{id}.json` | Timeline/activity items                           |
+| `notes/{id}.json`         | Notes data                                        |
+
+Supported field types:
+
+```txt id="ly3yr3"
+string
+email
+url
+textarea
+phone
+number
+currency
+date
+radio
+multi-select
+boolean
+tags
+```
+
+The runtime layout uploader accepts custom layout and field payloads and re-renders the UI without a reload.
+
+---
+
+# Dynamic Rendering
+
+Rendering is registry-driven at multiple levels:
+
+- pane registry → `pane.type`
+- view registry → `view.id`
+- field registry → `field.type`
+
+Adding a new pane, view, or field type requires:
+
+1. a component
+2. a registry entry
+
+The rendering flow remains unchanged.
+
+---
+
+# Scripts
+
+```bash
+npm run dev
+npm run build
+npm run preview
+
+npm run test
+npm run test:watch
+
+npm run lint
+npm run format
+```
+
+---
+
+# Development Workflow
+
+- ESLint + Prettier for formatting and linting
+- Husky pre-commit hooks
+- Conventional Commit validation through `commitlint`
+
+---
+
+# Deployment
+
+The app deploys to GitHub Pages.
+
+Router basename, API paths, and MSW worker paths derive from `import.meta.env.BASE_URL`, allowing the same build to run locally and under a production subpath.
+
+`index.html` is copied to `404.html` so deep links resolve correctly in the SPA environment.
+
+MSW ships in production as the demo backend.
+
+---
+
+# Notes / Tradeoffs
+
+- All edits are in-memory only; refresh resets state
+- MSW acts as the demo backend
+- Some actions are intentionally non-persistent or decorative
+- Conversations simulate activity feeds without real-time transport
+- The app currently ships with two mocked contacts
+- UI strings are English-only
