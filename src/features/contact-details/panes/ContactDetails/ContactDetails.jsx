@@ -11,7 +11,7 @@ import { Skeleton } from '@/shared/primitives.jsx';
 import styles from './ContactDetails.module.css';
 
 export function ContactDetails({ contactId }) {
-  const { folders, contact, isLoading } = useResolvedFolders(contactId);
+  const { folders, contact, isLoading, isError, refetch } = useResolvedFolders(contactId);
   const [search, setSearch] = useState('');
   const [view, setView] = useState('fields');
   const qc = useQueryClient();
@@ -52,6 +52,19 @@ export function ContactDetails({ contactId }) {
         : prev,
     );
   };
+
+  if (isError) {
+    return (
+      <section className={styles.pane}>
+        <div className={styles.errorState} role="alert">
+          <p>Couldn’t load contact.</p>
+          <button type="button" className={styles.retryBtn} onClick={() => refetch()}>
+            Try again
+          </button>
+        </div>
+      </section>
+    );
+  }
 
   if (isLoading || !contact || !visibleFolders) {
     return (

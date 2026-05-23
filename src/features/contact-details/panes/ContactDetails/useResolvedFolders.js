@@ -4,7 +4,12 @@ import { useLayout, useFields, useContact } from '../../api/queries.js';
 export function useResolvedFolders(contactId) {
   const { data: layout, isLoading: layoutLoading } = useLayout();
   const { data: fieldsData, isLoading: fieldsLoading } = useFields();
-  const { data: contact, isLoading: contactLoading } = useContact(contactId);
+  const {
+    data: contact,
+    isLoading: contactLoading,
+    isError: contactError,
+    refetch: refetchContact,
+  } = useContact(contactId);
 
   const isLoading = layoutLoading || fieldsLoading || contactLoading;
 
@@ -35,5 +40,5 @@ export function useResolvedFolders(contactId) {
     }));
   }, [layout, fieldsData, contact]);
 
-  return { folders, contact, isLoading };
+  return { folders, contact, isLoading, isError: contactError, refetch: refetchContact };
 }
