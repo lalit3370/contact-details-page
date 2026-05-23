@@ -1,0 +1,12 @@
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+/* ContactDetails owns the full pane while loading, so the stack needs
+   its own outer padding. The other two panes drop their skeleton inside
+   an already-padded body. */
+.contactDetailsStack {
+  padding: var(--space-4);
+}

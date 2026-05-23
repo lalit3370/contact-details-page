@@ -3,7 +3,7 @@ import { useConversations, useContact } from '../../api/queries.js';
 import { Thread } from './Thread.jsx';
 import { ChatMessage } from './ChatMessage.jsx';
 import { MessageInput } from './MessageInput.jsx';
-import { Skeleton } from '@/shared/primitives.jsx';
+import { ConversationsSkeleton } from '../skeletons/ConversationsSkeleton.jsx';
 import { PaneError } from '@/shared/PaneError.jsx';
 import { TypingIndicator } from './TypingIndicator.jsx';
 import { buildAvatarResolver } from '@/shared/utils.js';
@@ -30,11 +30,7 @@ export function Conversations({ contactId }) {
 
       <div className={styles.body}>
         {isLoading ? (
-          <div className={styles.skeletonStack}>
-            <Skeleton height={120} radius={8} />
-            <Skeleton height={80} radius={8} />
-            <Skeleton height={120} radius={8} />
-          </div>
+          <ConversationsSkeleton />
         ) : isError ? (
           <PaneError message="Couldn’t load conversations." onRetry={refetch} />
         ) : items.length === 0 ? (

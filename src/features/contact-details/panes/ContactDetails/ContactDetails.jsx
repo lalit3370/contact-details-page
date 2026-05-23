@@ -9,7 +9,7 @@ import { DndPanel } from './DndPanel.jsx';
 import { useResolvedFolders } from './useResolvedFolders.js';
 import { filterFolders } from './filterFolders.js';
 import { qk } from '../../api/queryKeys.js';
-import { Skeleton } from '@/shared/primitives.jsx';
+import { ContactDetailsSkeleton } from '../skeletons/ContactDetailsSkeleton.jsx';
 import { PaneError } from '@/shared/PaneError.jsx';
 import styles from './ContactDetails.module.css';
 
@@ -53,12 +53,7 @@ export function ContactDetails({ contactId }) {
   if (isLoading || !contact || !visibleFolders) {
     return (
       <section className={styles.pane} aria-busy="true">
-        <div className={styles.skeletonStack}>
-          <Skeleton height={48} radius={6} />
-          <Skeleton height={24} />
-          <Skeleton height={120} radius={6} />
-          <Skeleton height={120} radius={6} />
-        </div>
+        <ContactDetailsSkeleton />
       </section>
     );
   }

@@ -1,6 +1,6 @@
 import { useNotes } from '../../api/queries.js';
 import { notImplemented } from '@/shared/utils.js';
-import { Skeleton } from '@/shared/primitives.jsx';
+import { NotesSkeleton } from '../skeletons/NotesSkeleton.jsx';
 import { PaneError } from '@/shared/PaneError.jsx';
 import styles from './Notes.module.css';
 
@@ -26,11 +26,7 @@ export function Notes({ contactId }) {
 
       <div className={styles.body}>
         {isLoading ? (
-          <div className={styles.skeletonStack}>
-            <Skeleton height={100} radius={6} />
-            <Skeleton height={100} radius={6} />
-            <Skeleton height={100} radius={6} />
-          </div>
+          <NotesSkeleton />
         ) : isError ? (
           <PaneError message="Couldn’t load notes." onRetry={refetch} />
         ) : (data?.notes ?? []).length === 0 ? (
