@@ -7,8 +7,10 @@ import { Folder } from './Folder.jsx';
 import { FieldRow } from './FieldRow.jsx';
 import { DndPanel } from './DndPanel.jsx';
 import { useResolvedFolders } from './useResolvedFolders.js';
+import { filterFolders } from './filterFolders.js';
 import { qk } from '../../api/queryKeys.js';
 import { Skeleton } from '@/shared/primitives.jsx';
+import { PaneError } from '@/shared/PaneError.jsx';
 import styles from './ContactDetails.module.css';
 
 export function ContactDetails({ contactId }) {
@@ -17,21 +19,7 @@ export function ContactDetails({ contactId }) {
   const [view, setView] = useState('fields');
   const qc = useQueryClient();
 
-  const visibleFolders = useMemo(() => {
-    if (!folders) return null;
-    const q = search.trim().toLowerCase();
-    if (!q) return folders;
-    return folders
-      .map((f) => ({
-        ...f,
-        rows: f.rows.filter(
-          (r) =>
-            r.field.label.toLowerCase().includes(q) ||
-            (typeof r.value === 'string' && r.value.toLowerCase().includes(q)),
-        ),
-      }))
-      .filter((f) => f.rows.length > 0 || f.label.toLowerCase().includes(q));
-  }, [folders, search]);
+  const visibleFolders = useMemo(() => filterFolders(folders, search), [folders, search]);
 
   const toggleDnd = () => {
     if (!contact) return;
@@ -57,12 +45,7 @@ export function ContactDetails({ contactId }) {
   if (isError) {
     return (
       <section className={styles.pane}>
-        <div className={styles.errorState} role="alert">
-          <p>Couldn’t load contact.</p>
-          <button type="button" className={styles.retryBtn} onClick={() => refetch()}>
-            Try again
-          </button>
-        </div>
+        <PaneError message="Couldn’t load contact." onRetry={refetch} />
       </section>
     );
   }
