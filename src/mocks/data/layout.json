@@ -3,6 +3,16 @@
     {
       "id": "contactDetails",
       "type": "contactDetails",
+      "views": [
+        { "id": "fields", "label": "All Fields" },
+        { "id": "dnd", "label": "DND" }
+      ],
+      "actions": [
+        { "id": "send-email", "label": "Send email" },
+        { "id": "log-call", "label": "Log a call" },
+        { "id": "add-task", "label": "Add task" },
+        { "id": "delete", "label": "Delete", "variant": "danger" }
+      ],
       "folders": [
         {
           "id": "contact",

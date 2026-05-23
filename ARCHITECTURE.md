@@ -65,12 +65,13 @@ Composition happens once, in `useResolvedFolders` — it joins layout × field c
 
 ## Rendering Architecture
 
-Two registries drive composition from JSON:
+Three registries drive composition from JSON:
 
 - **Pane registry** maps `pane.type` → component. `PageLayout` iterates `layout.panes` and dispatches.
+- **View registry** maps a `views[].id` inside the `contactDetails` pane → component (`fields` → `FoldersView`, `dnd` → `DndView`). The pane's `views` and `actions` arrays drive the ActionBar tabs and Actions menu.
 - **Field registry** maps 12 field type ids → 7 components. Type families that share rendering share a component and branch on a prop.
 
-Adding a pane or field type is a registry entry plus a component — no `switch` statements in render code.
+Adding a pane, view, or field type is a registry entry plus a component — no `switch` statements in render code.
 
 ## Accessibility
 
@@ -99,6 +100,16 @@ Six JSON files drive the UI. Pane order, folder grouping, field width, and visib
     {
       "id": "contactDetails",
       "type": "contactDetails", // dispatched via paneRegistry
+      "views": [
+        // tab list in the ActionBar
+        { "id": "fields", "label": "All Fields" }, // id is bound to a component via viewRegistry
+        { "id": "dnd", "label": "DND" }, // omitted → falls back to defaults in code
+      ],
+      "actions": [
+        // entries in the Actions dropdown
+        { "id": "send-email", "label": "Send email" },
+        { "id": "delete", "label": "Delete", "variant": "danger" }, // variant=danger → red, auto-separator
+      ],
       "folders": [
         {
           "id": "contact",
