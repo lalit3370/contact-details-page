@@ -89,15 +89,137 @@ Edits write through `queryClient.setQueryData`; the cache is the source of truth
 
 ## Configuration Model
 
-JSON inputs drive the UI:
+Five JSON files drive the UI. Pane order, folder grouping, field width, and visibility are JSON edits — the runtime uploader swaps any of them in-memory via the override context.
 
-- **`layout.json`** — pane list; folders + `fieldIds` per `contactDetails` pane.
-- **`contactFields.json`** — field catalog keyed by id (`label`, `type`, optional `width`/`options`).
-- **`contacts/{id}.json`** — header + field values keyed by `contactFields` ids.
-- **`conversations/{id}.json`** — `items[]` of `kind: thread | chat`.
-- **`notes/{id}.json`** — `notes[]`.
+### `layout.json` — pane order + folder grouping
 
-Pane order, field width, and visibility are JSON edits. The runtime uploader swaps configs in-memory via the override context.
+```jsonc
+{
+  "panes": [
+    {
+      "id": "contactDetails",
+      "type": "contactDetails", // dispatched via paneRegistry
+      "folders": [
+        {
+          "id": "contact",
+          "label": "Contact",
+          "fieldIds": ["firstName", "lastName", "phone", "email"], // → contactFields keys
+          "defaultOpen": true, // optional, default true
+          "showAdd": true, // optional, renders the "+ Add" affordance
+        },
+      ],
+    },
+    { "id": "conversations", "type": "conversations" }, // bare panes — no config
+    { "id": "notes", "type": "notes" },
+  ],
+}
+```
+
+`pane.type` must match a `paneRegistry` key (`contactDetails | conversations | notes`); unknown types render a dev-only console warning and are skipped.
+
+### `contactFields.json` — field catalog
+
+```jsonc
+{
+  "fields": {
+    "firstName": { "label": "First Name", "type": "string", "width": "half" },
+    "budget": { "label": "Budget", "type": "currency", "currency": "USD" },
+    "preferredMake": {
+      "label": "Preferred Make",
+      "type": "radio",
+      "options": ["Toyota", "Honda", "Ford"],
+    },
+  },
+}
+```
+
+| Key        | Required | Notes                                              |
+| ---------- | -------- | -------------------------------------------------- |
+| `label`    | ✓        | Display string                                     |
+| `type`     | ✓        | One of 12 type ids (see below)                     |
+| `width`    | —        | `"half"` for side-by-side layout; default full-row |
+| `options`  | —        | Required for `radio` and `multi-select`            |
+| `currency` | —        | ISO code for `currency`; defaults to `USD`         |
+
+Supported `type` ids: `string`, `email`, `url`, `textarea`, `phone`, `number`, `currency`, `date`, `radio`, `multi-select`, `boolean`, `tags`. The 12 ids map to 7 components via `fieldRegistry`.
+
+### `contacts/{id}.json` — per-contact header + field values
+
+```jsonc
+{
+  "id": "1",
+  "header": {
+    "avatarUrl": "https://i.pravatar.cc/160?img=47", // nullable → falls back to initials
+    "displayName": "Olivia John",
+    "owner": { "id": "devon-lane", "name": "Devon Lane" },
+    "followers": [{ "id": "u1", "name": "Brooklyn Simmons" }],
+    "tags": ["Shared Contact", "VIP"],
+    "tagsOverflow": 15, // shown as a "+N" chip
+    "dnd": false,
+    "dndChannels": { "sms": false, "email": true, "calls": false, "push": false },
+  },
+  "fields": {
+    "firstName": "Olivia", // values keyed by contactFields ids
+    "budget": 35000,
+    "tradein": true,
+    "preferredFeatures": ["Apple CarPlay", "Heated Seats"],
+  },
+}
+```
+
+`fields` keys must exist in `contactFields.json`; missing definitions log a dev warning and skip the row. Value types track the field's `type` — string for text/email/url/phone/date/radio, number for number/currency, boolean for boolean, array for multi-select/tags.
+
+### `conversations/{id}.json` — timeline items + typing state
+
+```jsonc
+{
+  "items": [
+    {
+      "kind": "thread", // email-style thread with one preview message
+      "id": "t1",
+      "subject": "Set up a new time…",
+      "messageCount": 3,
+      "message": {
+        "id": "m1",
+        "sender": { "name": "Olivia John", "to": "Me", "avatar": null },
+        "timestamp": "5 min ago",
+        "starred": true,
+        "body": "Hey John,\n\n…",
+        "attachments": [
+          { "type": "orderTracking", "orderId": "UW-12345", "label": "Track Your Order" },
+        ],
+        "actions": ["reply"], // reserved; currently only "reply" is rendered
+      },
+    },
+    {
+      "kind": "chat", // single chat bubble, no thread
+      "id": "c1",
+      "sender": { "name": "Olivia", "avatar": null },
+      "timestamp": "11:44 AM",
+      "body": "Please let me know",
+    },
+  ],
+  "typing": [{ "name": "Olivia" }], // optional; shown as a typing indicator
+}
+```
+
+`items[].kind` is a discriminated union (`thread | chat`) — threads and chats are timeline siblings, never nested.
+
+### `notes/{id}.json` — flat note list
+
+```jsonc
+{
+  "notes": [
+    {
+      "id": "n1",
+      "title": "@Aaron Site Inspection completed.", // nullable; mention is the first whitespace-delimited token
+      "body": "Heavy moss buildup on north side…",
+      "timestamp": "2 hours ago",
+      "overdue": false, // overdue notes get an "Overdue" pill
+    },
+  ],
+}
+```
 
 ## Design Decisions
 
