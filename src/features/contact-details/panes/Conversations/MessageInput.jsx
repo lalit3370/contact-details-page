@@ -1,5 +1,6 @@
 import { forwardRef, useImperativeHandle, useRef, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
+import { formatClockTime } from '@/shared/utils.js';
 import styles from './Conversations.module.css';
 
 export const MessageInput = forwardRef(function MessageInput({ contactId }, ref) {
@@ -17,7 +18,6 @@ export const MessageInput = forwardRef(function MessageInput({ contactId }, ref)
     qc.setQueryData(['conversations', contactId], (prev) => {
       if (!prev) return prev;
       const now = new Date();
-      const time = `${now.getHours() % 12 || 12}:${String(now.getMinutes()).padStart(2, '0')} ${now.getHours() >= 12 ? 'PM' : 'AM'}`;
       return {
         ...prev,
         items: [
@@ -26,7 +26,7 @@ export const MessageInput = forwardRef(function MessageInput({ contactId }, ref)
             kind: 'chat',
             id: `local-${now.getTime()}`,
             sender: { name: 'Me' },
-            timestamp: time,
+            timestamp: formatClockTime(now),
             body: trimmed,
           },
         ],

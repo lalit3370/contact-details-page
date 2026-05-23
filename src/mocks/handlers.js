@@ -1,4 +1,5 @@
 import { http, HttpResponse, delay } from 'msw';
+import { apiUrl } from '@/shared/utils.js';
 
 import layoutData from './data/layout.json';
 import fieldsData from './data/contactFields.json';
@@ -21,8 +22,6 @@ const NOTES = {
   1: notes1,
   2: notes2,
 };
-
-const apiUrl = (path) => `${import.meta.env.BASE_URL}api${path}`;
 
 const latency = () => delay(Math.floor(200 + Math.random() * 200));
 

@@ -1,25 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
+import { formatDateDisplay } from '@/shared/utils.js';
 import styles from './Field.module.css';
-
-function formatDateDisplay(iso) {
-  if (!iso) return null;
-  // Avoid `new Date('YYYY-MM-DD')` which parses as UTC midnight and renders
-  // the previous day west of UTC. Build a local-time date from components.
-  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
-  if (!m) return iso;
-  const [, y, mo, d] = m;
-  const local = new Date(Number(y), Number(mo) - 1, Number(d));
-  try {
-    return new Intl.DateTimeFormat('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    }).format(local);
-  } catch {
-    return iso;
-  }
-}
 
 export function DateField({ field, value, fieldId, contactId }) {
   const [editing, setEditing] = useState(false);

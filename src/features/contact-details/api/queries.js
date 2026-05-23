@@ -1,8 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { useContext } from 'react';
 import { LayoutOverrideContext } from '../layout/LayoutOverrideContext.jsx';
-
-const apiUrl = (path) => `${import.meta.env.BASE_URL}api${path}`;
+import { apiUrl } from '@/shared/utils.js';
 
 async function fetchJson(url) {
   const res = await fetch(url);

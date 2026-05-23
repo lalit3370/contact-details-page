@@ -1,3 +1,4 @@
+import { getInitials } from './utils.js';
 import styles from './primitives.module.css';
 
 export function Avatar({ url, name, size = 32 }) {
@@ -25,13 +26,6 @@ export function Avatar({ url, name, size = 32 }) {
       {initials}
     </span>
   );
-}
-
-function getInitials(name) {
-  if (!name) return '?';
-  const parts = name.trim().split(/\s+/);
-  if (parts.length === 1) return parts[0][0].toUpperCase();
-  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
 
 export function Chip({ children, className, ...rest }) {

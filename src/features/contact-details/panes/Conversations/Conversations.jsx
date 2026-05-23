@@ -5,23 +5,9 @@ import { ChatMessage } from './ChatMessage.jsx';
 import { MessageInput } from './MessageInput.jsx';
 import { Skeleton } from '@/shared/primitives.jsx';
 import { TypingIndicator } from './TypingIndicator.jsx';
+import { buildAvatarResolver } from '@/shared/utils.js';
 
 import styles from './Conversations.module.css';
-
-function buildAvatarResolver(contact) {
-  const displayName = (contact?.header?.displayName ?? '').trim();
-  const avatarUrl = contact?.header?.avatarUrl ?? null;
-  if (!displayName || !avatarUrl) return () => null;
-  const lowerFull = displayName.toLowerCase();
-  const firstToken = lowerFull.split(/\s+/)[0];
-  return (senderName) => {
-    if (!senderName) return null;
-    const s = senderName.trim().toLowerCase();
-    // Exact-match the full display name, or the first-name token alone.
-    // Avoids substring false positives like "Tom" matching "Thompson".
-    return s === lowerFull || s === firstToken ? avatarUrl : null;
-  };
-}
 
 export function Conversations({ contactId }) {
   const { data, isLoading, isError } = useConversations(contactId);
