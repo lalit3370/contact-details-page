@@ -407,8 +407,14 @@
 
 .folderHeader {
   display: flex;
-  align-items: stretch;
+  align-items: center;
   border-radius: var(--radius-md);
+}
+
+/* Hover bg lives on the header so the whole row (including the area
+   under + Add) lights up, regardless of which sub-trigger the cursor is over. */
+.folderHeader:hover {
+  background: var(--color-bg-subtle);
 }
 
 .folder[data-state='open'] .folderHeader {
@@ -434,14 +440,17 @@
   border-radius: inherit;
 }
 
-.folderTrigger:hover {
-  background: var(--color-bg-subtle);
+.folderTrigger:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: -2px;
 }
 
 .folderLabel {
   flex: 1;
 }
 
+/* + Add behaves like a link inside the row: no own background; hover only
+   adds an underline. The row's hover bg still shows behind it. */
 .folderAdd {
   appearance: none;
   background: transparent;
@@ -451,27 +460,33 @@
   font-size: var(--font-sm);
   font-weight: 500;
   color: var(--color-primary);
-  padding: 0 var(--space-4);
-  border-radius: inherit;
+  padding: 0 var(--space-2);
 }
 
 .folderAdd:hover {
-  background: var(--color-bg-subtle);
+  text-decoration: underline;
+}
+
+.folderAdd:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
 }
 
 .folderChevronTrigger {
   appearance: none;
   background: transparent;
   border: none;
-  padding: 0 var(--space-3);
+  padding: var(--space-3) var(--space-4) var(--space-3) var(--space-2);
   display: inline-flex;
   align-items: center;
   cursor: pointer;
   border-radius: inherit;
 }
 
-.folderChevronTrigger:hover {
-  background: var(--color-bg-subtle);
+.folderChevronTrigger:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: -2px;
 }
 
 .folderChevron {
