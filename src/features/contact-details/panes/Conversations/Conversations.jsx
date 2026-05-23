@@ -10,7 +10,7 @@ import { buildAvatarResolver } from '@/shared/utils.js';
 import styles from './Conversations.module.css';
 
 export function Conversations({ contactId }) {
-  const { data, isLoading, isError } = useConversations(contactId);
+  const { data, isLoading, isError, refetch } = useConversations(contactId);
   const { data: contact } = useContact(contactId);
   const avatarFor = buildAvatarResolver(contact);
   const typingName = data?.typing?.[0]?.name ?? null;
@@ -35,7 +35,12 @@ export function Conversations({ contactId }) {
             <Skeleton height={120} radius={8} />
           </div>
         ) : isError ? (
-          <p className={styles.empty}>Couldn’t load conversations.</p>
+          <div className={styles.empty} role="alert">
+            <p>Couldn’t load conversations.</p>
+            <button type="button" className={styles.retryBtn} onClick={() => refetch()}>
+              Try again
+            </button>
+          </div>
         ) : items.length === 0 ? (
           <p className={styles.empty}>No conversations yet.</p>
         ) : (

@@ -3,7 +3,7 @@ import { Skeleton } from '@/shared/primitives.jsx';
 import styles from './Notes.module.css';
 
 export function Notes({ contactId }) {
-  const { data, isLoading, isError } = useNotes(contactId);
+  const { data, isLoading, isError, refetch } = useNotes(contactId);
 
   return (
     <section className={styles.pane} aria-label="Notes">
@@ -34,7 +34,12 @@ export function Notes({ contactId }) {
             <Skeleton height={100} radius={6} />
           </div>
         ) : isError ? (
-          <p className={styles.empty}>Couldn’t load notes.</p>
+          <div className={styles.empty} role="alert">
+            <p>Couldn’t load notes.</p>
+            <button type="button" className={styles.retryBtn} onClick={() => refetch()}>
+              Try again
+            </button>
+          </div>
         ) : (data?.notes ?? []).length === 0 ? (
           <p className={styles.empty}>No notes yet.</p>
         ) : (
