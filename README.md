@@ -73,6 +73,16 @@ Push to `main` → `.github/workflows/deploy.yml` runs `npm run build`, copies `
 
 - **Edits are in-memory.** Spec says no form submissions; refresh resets everything.
 - **MSW ships in production** (~280 KB). It is the demo's backend; a real product would make it dev-only.
+- **Service worker idle eviction.** MSW is a service worker, and browsers kill idle SWs after ~30s of no fetches. If you leave the tab open and idle for a minute, then navigate, the first batch of `/api/*` calls can bypass MSW and 404 against GitHub Pages. A page refresh re-registers the worker. Real product fixes: re-register handlers on visibility change + a periodic heartbeat, or wrap fetches with a retry that re-arms MSW. Out of scope for the demo since the failure is transient and recoverable.
+- **Some buttons are decorative.** These open an `alert('… not wired up in the demo.')` to convey surface area without a backend:
+  - Actions dropdown items (Send email, Log a call, Add task, Delete)
+  - Search row Filter button
+  - Each Folder's `+ Add` affordance
+  - Notes pane `+ Add` and close (`×`)
+  - Header `+ Add follower`, `+` add-tag chip, and `Call` quick-action
+
+  These _are_ wired (in-memory only, lost on refresh): inline field edits, the DND switch and channel toggles, tag remove (`×`), the message composer Send (appends to the conversations cache), per-message Reply (focuses the composer), and the back / prev / next contact navigation.
+
 - **Two contacts** wired (`1`, `2`). Add more by dropping JSON files under `mocks/data/contacts/`.
 - **No i18n.** Strings are English; JSON labels are literal display strings.
 - **Deep URLs return HTTP 404** on Pages even though the SPA renders correctly. GitHub Pages has no server-side rewrite — the SPA boots from the 404.html body. Cosmetic only.
