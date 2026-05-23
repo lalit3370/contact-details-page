@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { LayoutOverrideProvider } from '../layout/LayoutOverrideContext.jsx';
 import { useResolvedFolders } from '../panes/ContactDetails/useResolvedFolders.js';
 import { qk } from '../api/queryKeys.js';
+import { PaneType } from '../layout/paneTypes.js';
 
 function buildWrapper(seed) {
   const qc = new QueryClient({ defaultOptions: { queries: { retry: false } } });
@@ -27,7 +28,7 @@ describe('useResolvedFolders', () => {
         panes: [
           {
             id: 'cd',
-            type: 'contactDetails',
+            type: PaneType.ContactDetails,
             folders: [
               { id: 'main', label: 'Main', fieldIds: ['firstName', 'phone'], defaultOpen: true },
             ],
@@ -62,7 +63,7 @@ describe('useResolvedFolders', () => {
         panes: [
           {
             id: 'cd',
-            type: 'contactDetails',
+            type: PaneType.ContactDetails,
             folders: [
               { id: 'main', label: 'Main', fieldIds: ['firstName', 'bogus'], defaultOpen: true },
             ],
@@ -82,7 +83,7 @@ describe('useResolvedFolders', () => {
 
   it('returns [] when layout has no contactDetails pane', () => {
     const wrapper = buildWrapper({
-      layout: { panes: [{ id: 'n', type: 'notes' }] },
+      layout: { panes: [{ id: 'n', type: PaneType.Notes }] },
       fields: { fields: {} },
       contact: { id: 'c1', header: {}, fields: {} },
     });

@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { useLayout, useFields, useContact } from '../../api/queries.js';
+import { PaneType } from '../../layout/paneTypes.js';
 
 export function useResolvedFolders(contactId) {
   const { data: layout, isLoading: layoutLoading } = useLayout();
@@ -15,7 +16,7 @@ export function useResolvedFolders(contactId) {
 
   const folders = useMemo(() => {
     if (!layout || !fieldsData || !contact) return null;
-    const pane = layout.panes?.find((p) => p.type === 'contactDetails');
+    const pane = layout.panes?.find((p) => p.type === PaneType.ContactDetails);
     if (!pane) return [];
 
     return (pane.folders ?? []).map((folder) => ({

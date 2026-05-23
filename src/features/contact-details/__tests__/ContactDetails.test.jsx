@@ -6,6 +6,7 @@ import { LayoutOverrideProvider } from '../layout/LayoutOverrideContext.jsx';
 import { TooltipProvider } from '@/shared/Tooltip.jsx';
 import { ContactDetails } from '../panes/ContactDetails/ContactDetails.jsx';
 import { qk } from '../api/queryKeys.js';
+import { PaneType } from '../layout/paneTypes.js';
 
 function buildWrapper() {
   const qc = new QueryClient({ defaultOptions: { queries: { retry: false } } });
@@ -13,7 +14,7 @@ function buildWrapper() {
     panes: [
       {
         id: 'cd',
-        type: 'contactDetails',
+        type: PaneType.ContactDetails,
         folders: [
           {
             id: 'contact',

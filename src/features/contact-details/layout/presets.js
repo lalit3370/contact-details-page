@@ -1,3 +1,5 @@
+import { PaneType } from './paneTypes.js';
+
 export const layoutPresets = [
   {
     id: 'reorder-panes',
@@ -5,11 +7,11 @@ export const layoutPresets = [
     description: 'Notes first, then Conversations, then a minimal Contact Details.',
     payload: {
       panes: [
-        { id: 'notes', type: 'notes' },
-        { id: 'conversations', type: 'conversations' },
+        { id: 'notes', type: PaneType.Notes },
+        { id: 'conversations', type: PaneType.Conversations },
         {
           id: 'contactDetails',
-          type: 'contactDetails',
+          type: PaneType.ContactDetails,
           folders: [
             {
               id: 'contact',
@@ -30,7 +32,7 @@ export const layoutPresets = [
       panes: [
         {
           id: 'contactDetails',
-          type: 'contactDetails',
+          type: PaneType.ContactDetails,
           folders: [
             {
               id: 'essentials',
@@ -58,7 +60,7 @@ export const layoutPresets = [
       panes: [
         {
           id: 'contactDetails',
-          type: 'contactDetails',
+          type: PaneType.ContactDetails,
           folders: [
             {
               id: 'all-types',
@@ -79,7 +81,7 @@ export const layoutPresets = [
             },
           ],
         },
-        { id: 'conversations', type: 'conversations' },
+        { id: 'conversations', type: PaneType.Conversations },
       ],
     },
   },
@@ -91,7 +93,7 @@ export const layoutPresets = [
       panes: [
         {
           id: 'contactDetails',
-          type: 'contactDetails',
+          type: PaneType.ContactDetails,
           folders: [
             {
               id: 'preferences',
@@ -107,7 +109,7 @@ export const layoutPresets = [
             },
           ],
         },
-        { id: 'notes', type: 'notes' },
+        { id: 'notes', type: PaneType.Notes },
       ],
       fields: {
         firstName: { label: 'First Name', type: 'string', width: 'half' },
