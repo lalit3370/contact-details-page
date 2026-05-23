@@ -1,4 +1,5 @@
-// Pure helpers shared across the app. No React, no DOM, no fetch.
+// Small helpers shared across the app — pure formatters, the API prefix,
+// the avatar resolver, and a demo-only "not implemented" alert factory.
 
 export function getInitials(name) {
   if (!name) return '?';
@@ -43,6 +44,12 @@ export const apiUrl = (path) => `/api${path}`;
 // to the contact's avatar URL (if it matches), or null otherwise.
 // Uses exact match against the full display name or its first-name token,
 // to avoid substring false positives like "Tom" matching "Thompson".
+// Demo-only stub: returns an onClick handler that alerts the user the action
+// isn't wired up. Centralizes the "decorative button" pattern so every
+// alert-only affordance gets the same copy.
+export const notImplemented = (label) => () =>
+  alert(`${label}\n\nThis action is not wired up in the demo.`);
+
 export function buildAvatarResolver(contact) {
   const displayName = (contact?.header?.displayName ?? '').trim();
   const avatarUrl = contact?.header?.avatarUrl ?? null;

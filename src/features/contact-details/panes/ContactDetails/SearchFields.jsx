@@ -1,3 +1,4 @@
+import { notImplemented } from '@/shared/utils.js';
 import styles from './ContactDetails.module.css';
 
 export function SearchFields({ value, onChange }) {
@@ -27,7 +28,7 @@ export function SearchFields({ value, onChange }) {
           type="button"
           className={styles.searchFilterBtn}
           aria-label="Filter"
-          onClick={() => alert('Filter\n\nThis action is not wired up in the demo.')}
+          onClick={notImplemented('Filter')}
         >
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
             <path

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import * as Collapsible from '@radix-ui/react-collapsible';
+import { notImplemented } from '@/shared/utils.js';
 import styles from './ContactDetails.module.css';
 
 export function Folder({ folder, children }) {
@@ -32,9 +33,7 @@ export function Folder({ folder, children }) {
           <button
             type="button"
             className={styles.folderAdd}
-            onClick={() =>
-              alert(`Add to "${folder.label}"\n\nThis action is not wired up in the demo.`)
-            }
+            onClick={notImplemented(`Add to "${folder.label}"`)}
           >
             + Add
           </button>

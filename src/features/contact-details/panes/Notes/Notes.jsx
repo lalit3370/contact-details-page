@@ -1,4 +1,5 @@
 import { useNotes } from '../../api/queries.js';
+import { notImplemented } from '@/shared/utils.js';
 import { Skeleton } from '@/shared/primitives.jsx';
 import styles from './Notes.module.css';
 
@@ -9,18 +10,14 @@ export function Notes({ contactId }) {
     <section className={styles.pane} aria-label="Notes">
       <header className={styles.head}>
         <h2 className={styles.headTitle}>Notes</h2>
-        <button
-          type="button"
-          className={styles.addBtn}
-          onClick={() => alert('Add note\n\nThis action is not wired up in the demo.')}
-        >
+        <button type="button" className={styles.addBtn} onClick={notImplemented('Add note')}>
           + Add
         </button>
         <button
           type="button"
           className={styles.closeBtn}
           aria-label="Close notes"
-          onClick={() => alert('Close notes\n\nThis action is not wired up in the demo.')}
+          onClick={notImplemented('Close notes')}
         >
           ×
         </button>

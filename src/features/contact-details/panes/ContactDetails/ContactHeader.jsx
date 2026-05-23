@@ -4,6 +4,7 @@ import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { useQueryClient } from '@tanstack/react-query';
 import { useContacts } from '../../api/queries.js';
 import { qk } from '../../api/queryKeys.js';
+import { notImplemented } from '@/shared/utils.js';
 import { Avatar, Chip, IconButton } from '@/shared/primitives.jsx';
 import styles from './ContactDetails.module.css';
 
@@ -83,7 +84,7 @@ export function ContactHeader({ contactId, contact }) {
           <IconButton
             label="Call"
             className={styles.headerCallBtn}
-            onClick={() => alert('Call\n\nThis action is not wired up in the demo.')}
+            onClick={notImplemented('Call')}
           >
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
               <path
@@ -147,9 +148,7 @@ export function ContactHeader({ contactId, contact }) {
                   <DropdownMenu.Separator className={styles.actionMenuSep} />
                   <DropdownMenu.Item
                     className={styles.actionMenuItem}
-                    onSelect={() =>
-                      alert('Add follower\n\nThis action is not wired up in the demo.')
-                    }
+                    onSelect={notImplemented('Add follower')}
                   >
                     + Add follower
                   </DropdownMenu.Item>
@@ -180,7 +179,7 @@ export function ContactHeader({ contactId, contact }) {
               type="button"
               className={styles.tagAdd}
               aria-label="Add tag"
-              onClick={() => alert('Add tag\n\nThis action is not wired up in the demo.')}
+              onClick={notImplemented('Add tag')}
             >
               +
             </button>

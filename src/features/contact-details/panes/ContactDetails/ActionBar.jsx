@@ -1,8 +1,6 @@
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
+import { notImplemented } from '@/shared/utils.js';
 import styles from './ContactDetails.module.css';
-
-const notImplemented = (label) => () =>
-  alert(`${label}\n\nThis action is not wired up in the demo.`);
 
 export function ActionBar({ view, onChangeView, dndOn }) {
   return (
