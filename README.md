@@ -34,15 +34,16 @@ Not in the tree: Redux/Zustand, MUI/Ant Design/Chakra, styled-components/Emotion
 
 ## JSON configs
 
-Five files drive the UI. Editing them is the supported way to change the page.
+Six files drive the UI. Editing them is the supported way to change the page.
 
-| File                      | Purpose                                             |
-| ------------------------- | --------------------------------------------------- |
-| `layout.json`             | Pane order; folders + field ids per pane            |
-| `contactFields.json`      | Field catalog (label, type, optional width/options) |
-| `contacts/{id}.json`      | Per-contact header + values keyed by field id       |
-| `conversations/{id}.json` | `items[]` of `kind: thread \| chat`                 |
-| `notes/{id}.json`         | `notes[]`                                           |
+| File                      | Purpose                                                   |
+| ------------------------- | --------------------------------------------------------- |
+| `layout.json`             | Pane order; folders + field ids per pane                  |
+| `contactFields.json`      | Field catalog (label, type, optional width/options)       |
+| `contacts/{id}.json`      | Per-contact header + values keyed by field id             |
+| `owners.json`             | Account-wide owner pool; contact `owner` references by id |
+| `conversations/{id}.json` | `items[]` of `kind: thread \| chat`                       |
+| `notes/{id}.json`         | `notes[]`                                                 |
 
 Supported field types: `string`, `email`, `url`, `textarea`, `phone`, `number`, `currency`, `date`, `radio`, `multi-select`, `boolean`, `tags`.
 

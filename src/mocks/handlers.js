@@ -3,6 +3,7 @@ import { apiUrl } from '@/shared/utils.js';
 
 import layoutData from './data/layout.json';
 import fieldsData from './data/contactFields.json';
+import ownersData from './data/owners.json';
 import contact1 from './data/contacts/1.json';
 import contact2 from './data/contacts/2.json';
 import conversations1 from './data/conversations/1.json';
@@ -70,6 +71,13 @@ export const handlers = [
     const err = maybeError(request);
     if (err) return err;
     return HttpResponse.json(layoutData);
+  }),
+
+  http.get(apiUrl('/owners'), async ({ request }) => {
+    await latency();
+    const err = maybeError(request);
+    if (err) return err;
+    return HttpResponse.json(ownersData);
   }),
 
   http.get(apiUrl('/contacts/:id/conversations'), async ({ params, request }) => {

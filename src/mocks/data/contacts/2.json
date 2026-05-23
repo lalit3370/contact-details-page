@@ -4,11 +4,6 @@
     "avatarUrl": null,
     "displayName": "Marcus Chen",
     "owner": { "id": "olivia-perry", "name": "Olivia Perry" },
-    "ownerOptions": [
-      { "id": "devon-lane", "name": "Devon Lane" },
-      { "id": "olivia-perry", "name": "Olivia Perry" },
-      { "id": "brooklyn-simmons", "name": "Brooklyn Simmons" }
-    ],
     "followers": [{ "id": "u4", "name": "Wade Warren" }],
     "tags": ["Lead"],
     "tagsOverflow": 0,

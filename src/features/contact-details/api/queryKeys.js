@@ -7,6 +7,7 @@ export const qk = {
   contact: (id) => ['contact', id],
   fields: ['fields'],
   layout: ['layout'],
+  owners: ['owners'],
   conversations: (id) => ['conversations', id],
   notes: (id) => ['notes', id],
 };

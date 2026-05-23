@@ -49,6 +49,13 @@ export function useLayout() {
   return real;
 }
 
+export function useOwners() {
+  return useQuery({
+    queryKey: qk.owners,
+    queryFn: () => fetchJson(apiUrl('/owners')),
+  });
+}
+
 export function useConversations(contactId) {
   return useQuery({
     queryKey: qk.conversations(contactId),

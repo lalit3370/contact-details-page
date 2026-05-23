@@ -4,11 +4,6 @@
     "avatarUrl": "https://i.pravatar.cc/160?img=47",
     "displayName": "Olivia John",
     "owner": { "id": "devon-lane", "name": "Devon Lane" },
-    "ownerOptions": [
-      { "id": "devon-lane", "name": "Devon Lane" },
-      { "id": "olivia-perry", "name": "Olivia Perry" },
-      { "id": "brooklyn-simmons", "name": "Brooklyn Simmons" }
-    ],
     "followers": [
       { "id": "u1", "name": "Brooklyn Simmons" },
       { "id": "u2", "name": "Cameron Williamson" },

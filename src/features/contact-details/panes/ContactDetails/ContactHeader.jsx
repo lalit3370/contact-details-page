@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { useQueryClient } from '@tanstack/react-query';
-import { useContacts } from '../../api/queries.js';
+import { useContacts, useOwners } from '../../api/queries.js';
 import { qk } from '../../api/queryKeys.js';
 import { notImplemented } from '@/shared/utils.js';
 import { Avatar, Chip, IconButton } from '@/shared/primitives.jsx';
@@ -10,6 +10,7 @@ import styles from './ContactDetails.module.css';
 
 export function ContactHeader({ contactId, contact }) {
   const { data: contactsData } = useContacts();
+  const { data: ownersData } = useOwners();
   const navigate = useNavigate();
   const qc = useQueryClient();
 
@@ -102,7 +103,7 @@ export function ContactHeader({ contactId, contact }) {
               </DropdownMenu.Trigger>
               <DropdownMenu.Portal>
                 <DropdownMenu.Content className={styles.actionMenu} sideOffset={6}>
-                  {(header.ownerOptions ?? []).map((o) => (
+                  {(ownersData?.owners ?? []).map((o) => (
                     <DropdownMenu.Item
                       key={o.id}
                       className={styles.actionMenuItem}

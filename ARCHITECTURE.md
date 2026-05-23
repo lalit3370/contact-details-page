@@ -89,7 +89,7 @@ Edits write through `queryClient.setQueryData`; the cache is the source of truth
 
 ## Configuration Model
 
-Five JSON files drive the UI. Pane order, folder grouping, field width, and visibility are JSON edits — the runtime uploader swaps any of them in-memory via the override context.
+Six JSON files drive the UI. Pane order, folder grouping, field width, and visibility are JSON edits — the runtime uploader swaps any of them in-memory via the override context.
 
 ### `layout.json` — pane order + folder grouping
 
@@ -151,12 +151,7 @@ Supported `type` ids: `string`, `email`, `url`, `textarea`, `phone`, `number`, `
   "header": {
     "avatarUrl": "https://i.pravatar.cc/160?img=47", // nullable → falls back to initials
     "displayName": "Olivia John",
-    "owner": { "id": "devon-lane", "name": "Devon Lane" },
-    "ownerOptions": [
-      // selectable pool for the owner dropdown
-      { "id": "devon-lane", "name": "Devon Lane" },
-      { "id": "olivia-perry", "name": "Olivia Perry" },
-    ],
+    "owner": { "id": "devon-lane", "name": "Devon Lane" }, // → references owners.json by id
     "followers": [{ "id": "u1", "name": "Brooklyn Simmons" }],
     "tags": ["Shared Contact", "VIP"],
     "tagsOverflow": 15, // shown as a "+N" chip
@@ -173,6 +168,19 @@ Supported `type` ids: `string`, `email`, `url`, `textarea`, `phone`, `number`, `
 ```
 
 `fields` keys must exist in `contactFields.json`; missing definitions log a dev warning and skip the row. Value types track the field's `type` — string for text/email/url/phone/date/radio, number for number/currency, boolean for boolean, array for multi-select/tags.
+
+### `owners.json` — account-wide owner pool
+
+```jsonc
+{
+  "owners": [
+    { "id": "devon-lane", "name": "Devon Lane" },
+    { "id": "olivia-perry", "name": "Olivia Perry" },
+  ],
+}
+```
+
+Account-scoped, not per-contact — every contact's `owner` field references an entry here by `id`. Matches how production CRMs (HubSpot's `/crm/v3/owners`, Salesforce's `User` object) model owner selection: pool fetched once, records hold a foreign key. Permission filtering (who can be assigned which records) would layer on top of this in a real product.
 
 ### `conversations/{id}.json` — timeline items + typing state
 
