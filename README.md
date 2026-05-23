@@ -85,6 +85,7 @@ Push to `main` → `.github/workflows/deploy.yml` runs `npm run build`, copies `
   These _are_ wired (in-memory only, lost on refresh): inline field edits, the DND switch and channel toggles, tag remove (`×`), the message composer Send (appends to the conversations cache), per-message Reply (focuses the composer), and the back / prev / next contact navigation.
 
 - **Header `←` back uses `navigate(-1)`.** Fine for in-app navigation, but if the user lands on the page via a deep link, refresh, or share URL, popping history may exit the app or do nothing predictable. A real product would track in-app history depth and fall back to a contacts list (or disable the button) when none exists.
+- **No real-time transport for Conversations.** A real CRM pushes chat messages, typing indicators, read receipts, and presence over a WebSocket (Intercom, HubSpot, Salesforce all do; email-style threads can tolerate 30–60s polling). Incoming updates would flow into the same TanStack Query cache via `setQueryData`, so the render path is unchanged. The demo fetches once on mount, appends locally on send, and renders the static `typing` field from the JSON as-is.
 - **Two contacts** wired (`1`, `2`). Add more by dropping JSON files under `mocks/data/contacts/`.
 - **No i18n.** Strings are English; JSON labels are literal display strings.
 - **Deep URLs return HTTP 404** on Pages even though the SPA renders correctly. GitHub Pages has no server-side rewrite — the SPA boots from the 404.html body. Cosmetic only.
