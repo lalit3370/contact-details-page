@@ -14,9 +14,13 @@ export function useResolvedFolders(contactId) {
 
   const isLoading = layoutLoading || fieldsLoading || contactLoading;
 
+  const pane = useMemo(
+    () => layout?.panes?.find((p) => p.type === PaneType.ContactDetails) ?? null,
+    [layout],
+  );
+
   const folders = useMemo(() => {
-    if (!layout || !fieldsData || !contact) return null;
-    const pane = layout.panes?.find((p) => p.type === PaneType.ContactDetails);
+    if (!fieldsData || !contact) return null;
     if (!pane) return [];
 
     return (pane.folders ?? []).map((folder) => ({
@@ -39,7 +43,7 @@ export function useResolvedFolders(contactId) {
         })
         .filter(Boolean),
     }));
-  }, [layout, fieldsData, contact]);
+  }, [pane, fieldsData, contact]);
 
-  return { folders, contact, isLoading, isError: contactError, refetch: refetchContact };
+  return { folders, contact, pane, isLoading, isError: contactError, refetch: refetchContact };
 }

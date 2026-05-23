@@ -1,4 +1,6 @@
-import styles from './ContactDetails.module.css';
+import { useQueryClient } from '@tanstack/react-query';
+import { qk } from '../../../api/queryKeys.js';
+import styles from '../ContactDetails.module.css';
 
 const CHANNELS = [
   { id: 'sms', label: 'SMS' },
@@ -7,7 +9,31 @@ const CHANNELS = [
   { id: 'push', label: 'Push notifications' },
 ];
 
-export function DndPanel({ dndOn, onToggleDnd, channels, onToggleChannel }) {
+export function DndView({ contactId, contact }) {
+  const qc = useQueryClient();
+  const dndOn = Boolean(contact?.header?.dnd);
+  const channels = contact?.header?.dndChannels;
+
+  const toggleDnd = () => {
+    qc.setQueryData(qk.contact(contactId), (prev) =>
+      prev ? { ...prev, header: { ...prev.header, dnd: !prev.header.dnd } } : prev,
+    );
+  };
+
+  const toggleChannel = (channelId, value) => {
+    qc.setQueryData(qk.contact(contactId), (prev) =>
+      prev
+        ? {
+            ...prev,
+            header: {
+              ...prev.header,
+              dndChannels: { ...(prev.header.dndChannels ?? {}), [channelId]: value },
+            },
+          }
+        : prev,
+    );
+  };
+
   return (
     <div className={styles.dndPanel} aria-label="Do Not Disturb settings">
       <div className={styles.dndCard}>
@@ -26,7 +52,7 @@ export function DndPanel({ dndOn, onToggleDnd, channels, onToggleChannel }) {
             aria-checked={dndOn}
             aria-label="Toggle Do Not Disturb"
             className={`${styles.dndSwitch} ${dndOn ? styles.dndSwitchOn : ''}`}
-            onClick={onToggleDnd}
+            onClick={toggleDnd}
           >
             <span className={styles.dndSwitchThumb} />
           </button>
@@ -54,7 +80,7 @@ export function DndPanel({ dndOn, onToggleDnd, channels, onToggleChannel }) {
                 <input
                   type="checkbox"
                   checked={Boolean(channels?.[ch.id])}
-                  onChange={(e) => onToggleChannel(ch.id, e.target.checked)}
+                  onChange={(e) => toggleChannel(ch.id, e.target.checked)}
                 />
                 <span>{ch.label}</span>
               </label>

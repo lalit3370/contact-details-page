@@ -1,46 +1,32 @@
-import { useMemo, useState } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
+import { useState } from 'react';
 import { ContactHeader } from './ContactHeader.jsx';
 import { ActionBar } from './ActionBar.jsx';
-import { SearchFields } from './SearchFields.jsx';
-import { Folder } from './Folder.jsx';
-import { FieldRow } from './FieldRow.jsx';
-import { DndPanel } from './DndPanel.jsx';
 import { useResolvedFolders } from './useResolvedFolders.js';
-import { filterFolders } from './filterFolders.js';
-import { qk } from '../../api/queryKeys.js';
+import { viewRegistry } from './views/viewRegistry.js';
 import { ContactDetailsSkeleton } from '../skeletons/ContactDetailsSkeleton.jsx';
 import { PaneError } from '@/shared/PaneError.jsx';
 import styles from './ContactDetails.module.css';
 
+// Fallback view/action sets used when the layout JSON for the contactDetails
+// pane omits `views` or `actions`. Keeping defaults in code preserves
+// backwards-compat with layouts written before these keys existed.
+const DEFAULT_VIEWS = [
+  { id: 'fields', label: 'All Fields' },
+  { id: 'dnd', label: 'DND' },
+];
+
+const DEFAULT_ACTIONS = [
+  { id: 'send-email', label: 'Send email' },
+  { id: 'log-call', label: 'Log a call' },
+  { id: 'add-task', label: 'Add task' },
+  { id: 'delete', label: 'Delete', variant: 'danger' },
+];
+
 export function ContactDetails({ contactId }) {
-  const { folders, contact, isLoading, isError, refetch } = useResolvedFolders(contactId);
-  const [search, setSearch] = useState('');
-  const [view, setView] = useState('fields');
-  const qc = useQueryClient();
-
-  const visibleFolders = useMemo(() => filterFolders(folders, search), [folders, search]);
-
-  const toggleDnd = () => {
-    if (!contact) return;
-    qc.setQueryData(qk.contact(contactId), (prev) =>
-      prev ? { ...prev, header: { ...prev.header, dnd: !prev.header.dnd } } : prev,
-    );
-  };
-
-  const toggleDndChannel = (channelId, value) => {
-    qc.setQueryData(qk.contact(contactId), (prev) =>
-      prev
-        ? {
-            ...prev,
-            header: {
-              ...prev.header,
-              dndChannels: { ...(prev.header.dndChannels ?? {}), [channelId]: value },
-            },
-          }
-        : prev,
-    );
-  };
+  const { folders, contact, pane, isLoading, isError, refetch } = useResolvedFolders(contactId);
+  const views = pane?.views ?? DEFAULT_VIEWS;
+  const actions = pane?.actions ?? DEFAULT_ACTIONS;
+  const [activeViewId, setActiveViewId] = useState(views[0]?.id ?? 'fields');
 
   if (isError) {
     return (
@@ -50,7 +36,7 @@ export function ContactDetails({ contactId }) {
     );
   }
 
-  if (isLoading || !contact || !visibleFolders) {
+  if (isLoading || !contact || !folders) {
     return (
       <section className={styles.pane} aria-busy="true">
         <ContactDetailsSkeleton />
@@ -58,41 +44,26 @@ export function ContactDetails({ contactId }) {
     );
   }
 
+  const ActiveView = viewRegistry[activeViewId];
+  const decoratedViews = views.map((v) =>
+    // Surface the DND state as a dot indicator on its tab. Other view ids
+    // could light up here too if more state-bearing views are added.
+    v.id === 'dnd' ? { ...v, indicator: Boolean(contact.header.dnd) } : v,
+  );
+
   return (
     <section className={styles.pane} aria-label="Contact details">
       <ContactHeader contactId={contactId} contact={contact} />
-      <ActionBar view={view} onChangeView={setView} dndOn={contact.header.dnd} />
-      {view === 'fields' ? (
-        <>
-          <SearchFields value={search} onChange={setSearch} />
-          <div className={styles.folders}>
-            {visibleFolders.length === 0 ? (
-              <p className={styles.empty}>No matching fields or folders.</p>
-            ) : (
-              visibleFolders.map((folder) => (
-                <Folder key={folder.id} folder={folder}>
-                  {folder.rows.map((row) => (
-                    <FieldRow
-                      key={row.id}
-                      field={row.field}
-                      value={row.value}
-                      fieldId={row.id}
-                      contactId={contactId}
-                      contact={contact}
-                    />
-                  ))}
-                </Folder>
-              ))
-            )}
-          </div>
-        </>
+      <ActionBar
+        views={decoratedViews}
+        actions={actions}
+        activeViewId={activeViewId}
+        onChangeView={setActiveViewId}
+      />
+      {ActiveView ? (
+        <ActiveView contactId={contactId} contact={contact} folders={folders} />
       ) : (
-        <DndPanel
-          dndOn={contact.header.dnd}
-          onToggleDnd={toggleDnd}
-          channels={contact.header.dndChannels}
-          onToggleChannel={toggleDndChannel}
-        />
+        <p className={styles.empty}>Unknown view: {activeViewId}</p>
       )}
     </section>
   );
