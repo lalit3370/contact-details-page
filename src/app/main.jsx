@@ -1,6 +1,8 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { App } from './App.jsx';
+import { BrowserRouter } from 'react-router-dom';
+import { AppProviders } from './AppProviders.jsx';
+import { AppRoutes } from './routes.jsx';
 import '@/styles/base.css';
 
 async function bootstrap() {
@@ -12,7 +14,11 @@ async function bootstrap() {
 
   createRoot(document.getElementById('root')).render(
     <StrictMode>
-      <App />
+      <AppProviders>
+        <BrowserRouter>
+          <AppRoutes />
+        </BrowserRouter>
+      </AppProviders>
     </StrictMode>,
   );
 }
