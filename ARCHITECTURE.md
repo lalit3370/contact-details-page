@@ -152,6 +152,11 @@ Supported `type` ids: `string`, `email`, `url`, `textarea`, `phone`, `number`, `
     "avatarUrl": "https://i.pravatar.cc/160?img=47", // nullable → falls back to initials
     "displayName": "Olivia John",
     "owner": { "id": "devon-lane", "name": "Devon Lane" },
+    "ownerOptions": [
+      // selectable pool for the owner dropdown
+      { "id": "devon-lane", "name": "Devon Lane" },
+      { "id": "olivia-perry", "name": "Olivia Perry" },
+    ],
     "followers": [{ "id": "u1", "name": "Brooklyn Simmons" }],
     "tags": ["Shared Contact", "VIP"],
     "tagsOverflow": 15, // shown as a "+N" chip

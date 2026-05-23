@@ -8,12 +8,6 @@ import { notImplemented } from '@/shared/utils.js';
 import { Avatar, Chip, IconButton } from '@/shared/primitives.jsx';
 import styles from './ContactDetails.module.css';
 
-const OWNER_OPTIONS = [
-  { id: 'devon-lane', name: 'Devon Lane' },
-  { id: 'olivia-perry', name: 'Olivia Perry' },
-  { id: 'brooklyn-simmons', name: 'Brooklyn Simmons' },
-];
-
 export function ContactHeader({ contactId, contact }) {
   const { data: contactsData } = useContacts();
   const navigate = useNavigate();
@@ -108,7 +102,7 @@ export function ContactHeader({ contactId, contact }) {
               </DropdownMenu.Trigger>
               <DropdownMenu.Portal>
                 <DropdownMenu.Content className={styles.actionMenu} sideOffset={6}>
-                  {OWNER_OPTIONS.map((o) => (
+                  {(header.ownerOptions ?? []).map((o) => (
                     <DropdownMenu.Item
                       key={o.id}
                       className={styles.actionMenuItem}
