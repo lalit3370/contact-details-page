@@ -27,9 +27,7 @@ export function SearchFields({ value, onChange }) {
           type="button"
           className={styles.searchFilterBtn}
           aria-label="Filter"
-          onClick={(e) => {
-            e.preventDefault();
-          }}
+          onClick={() => alert('Filter\n\nThis action is not wired up in the demo.')}
         >
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
             <path

@@ -79,7 +79,11 @@ export function ContactHeader({ contactId, contact }) {
         <div className={styles.headerProfile}>
           <Avatar url={header.avatarUrl} name={header.displayName} size={36} />
           <h1 className={styles.headerName}>{header.displayName}</h1>
-          <IconButton label="Call" className={styles.headerCallBtn}>
+          <IconButton
+            label="Call"
+            className={styles.headerCallBtn}
+            onClick={() => alert('Call\n\nThis action is not wired up in the demo.')}
+          >
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
               <path
                 d="M3 3.5C3 2.67 3.67 2 4.5 2H5.5L6.5 4.5L5 5.5C5.5 7 7 8.5 8.5 9L9.5 7.5L12 8.5V9.5C12 10.33 11.33 11 10.5 11C6.36 11 3 7.64 3 3.5Z"
