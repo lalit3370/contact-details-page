@@ -3,12 +3,10 @@ import { AppProviders } from './AppProviders.jsx';
 import { ContactDetailsRoute } from '@/features/contact-details/routes/ContactDetailsRoute.jsx';
 import { NotFoundRoute } from './NotFoundRoute.jsx';
 
-const basename = import.meta.env.BASE_URL.replace(/\/$/, '') || '/';
-
 export function App() {
   return (
     <AppProviders>
-      <BrowserRouter basename={basename}>
+      <BrowserRouter>
         <Routes>
           <Route path="/" element={<Navigate to="/contact/details/1" replace />} />
           <Route path="/contact/details/:contactId" element={<ContactDetailsRoute />} />

@@ -107,7 +107,6 @@ Pane order, field width, and visibility are JSON edits. The runtime uploader swa
 | Pane rendering  | Registry                             | Layout JSON drives order and visibility without component changes |
 | Conversations   | `items[]` with `kind`                | Threads and chats are timeline siblings, not nested               |
 | Layout override | Single Context                       | Uploader injects from outside the consuming subtree               |
-| Subpath routing | `basename` from `BASE_URL`           | Same code runs at `/` in dev and `/contact-details-page` in prod  |
 
 ## Error Handling
 
@@ -135,4 +134,4 @@ Vitest + RTL. Three specs cover the load-bearing seams:
 
 ## Deployment
 
-GitHub Pages at `projects.lalitkumar.dev/contact-details-page/`. Production sets `base: '/contact-details-page/'`; router `basename`, MSW worker URL, and API paths all derive from `import.meta.env.BASE_URL`, so prefixes stay aligned. `index.html` is copied to `404.html` so deep links survive a hard reload. MSW ships in production — it is the demo's backend.
+GitHub Pages at `projects.lalitkumar.dev`. The app serves from the domain root, so router, MSW worker URL, and API paths are all plain root-relative. `index.html` is copied to `404.html` so deep links survive a hard reload. MSW ships in production — it is the demo's backend.

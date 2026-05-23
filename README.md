@@ -1,11 +1,11 @@
 # Contact Details Page
 
 [![Deploy](https://github.com/lalit3370/contact-details-page/actions/workflows/deploy.yml/badge.svg)](https://github.com/lalit3370/contact-details-page/actions/workflows/deploy.yml)
-[![Live](https://img.shields.io/badge/live-projects.lalitkumar.dev%2Fcontact--details--page-2563eb)](https://projects.lalitkumar.dev/contact-details-page/)
+[![Live](https://img.shields.io/badge/live-projects.lalitkumar.dev-2563eb)](https://projects.lalitkumar.dev/)
 
 A CRM contact details page rendered entirely from JSON — layout, field catalog, contact data, conversations, notes. Reshape the UI by editing JSON; no code changes.
 
-**Live:** [projects.lalitkumar.dev/contact-details-page](https://projects.lalitkumar.dev/contact-details-page/)
+**Live:** [projects.lalitkumar.dev](https://projects.lalitkumar.dev/)
 **Architecture:** [`ARCHITECTURE.md`](./ARCHITECTURE.md)
 
 ## Quickstart
@@ -67,7 +67,7 @@ npm run preview      # Serve the build
 
 ## Deployment
 
-Push to `main` → `.github/workflows/deploy.yml` builds with `base: '/contact-details-page/'`, assembles a tree with `CNAME` + a `404.html` copy of `index.html` (so SPA deep links survive hard reloads), and publishes to GitHub Pages. DNS: one CNAME, `projects → lalit3370.github.io`. Final URL: `projects.lalitkumar.dev/contact-details-page/`.
+Push to `main` → `.github/workflows/deploy.yml` runs `npm run build`, copies `dist/index.html` to `dist/404.html` (so SPA deep links survive a hard reload), and publishes `dist/` to GitHub Pages. DNS: one CNAME, `projects → lalit3370.github.io`. Final URL: `projects.lalitkumar.dev`.
 
 ## Trade-offs
 

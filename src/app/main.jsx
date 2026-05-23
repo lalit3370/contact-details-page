@@ -7,7 +7,7 @@ async function bootstrap() {
   const { worker } = await import('@/mocks/browser.js');
   await worker.start({
     onUnhandledRequest: 'bypass',
-    serviceWorker: { url: `${import.meta.env.BASE_URL}mockServiceWorker.js` },
+    serviceWorker: { url: '/mockServiceWorker.js' },
   });
 
   createRoot(document.getElementById('root')).render(
