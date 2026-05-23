@@ -459,6 +459,21 @@
   background: var(--color-bg-subtle);
 }
 
+.folderChevronTrigger {
+  appearance: none;
+  background: transparent;
+  border: none;
+  padding: 0 var(--space-3);
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  border-radius: inherit;
+}
+
+.folderChevronTrigger:hover {
+  background: var(--color-bg-subtle);
+}
+
 .folderChevron {
   transition: transform 0.15s ease;
   color: var(--color-text-muted);

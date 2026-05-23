@@ -129,4 +129,35 @@ export const layoutPresets = [
       },
     },
   },
+  {
+    id: 'custom-actionbar',
+    name: 'Custom ActionBar',
+    description: 'Demonstrates JSON-driven views and actions on the contactDetails pane.',
+    payload: {
+      panes: [
+        {
+          id: 'contactDetails',
+          type: PaneType.ContactDetails,
+          views: [
+            { id: 'fields', label: 'Profile' },
+            { id: 'dnd', label: 'Quiet' },
+          ],
+          actions: [
+            { id: 'send-email', label: 'Email this contact' },
+            { id: 'log-call', label: 'Log a call' },
+            { id: 'archive', label: 'Archive', variant: 'danger' },
+          ],
+          folders: [
+            {
+              id: 'contact',
+              label: 'Contact',
+              fieldIds: ['firstName', 'lastName', 'phone', 'email'],
+              defaultOpen: true,
+            },
+          ],
+        },
+        { id: 'notes', type: PaneType.Notes },
+      ],
+    },
+  },
 ];

@@ -26,12 +26,17 @@ src/
 ├── app/                       App shell — providers, router, QueryClient, 404
 ├── features/                  Feature modules — one folder per product area
 │   └── contact-details/
-│       ├── api/               Query hooks
-│       ├── layout/            PageLayout, pane registry, override + uploader
-│       ├── panes/             ContactDetails, Conversations, Notes
+│       ├── api/               Query hooks + queryKeys factory
+│       ├── layout/            PageLayout, paneRegistry, paneTypes, override + uploader
+│       ├── panes/
+│       │   ├── ContactDetails/    Header, ActionBar, Folder, FieldRow + fields/
+│       │   │   └── views/         FoldersView, DndView, viewRegistry
+│       │   ├── Conversations/     Pane + Thread/Message/MessageInput
+│       │   ├── Notes/             Pane + NoteCard
+│       │   └── skeletons/         Per-pane loading skeletons
 │       ├── routes/            Route components
 │       └── __tests__/         Vitest specs
-├── shared/                    Generic primitives + pure utilities
+├── shared/                    Primitives + Icons + PaneError + utils
 ├── mocks/                     MSW worker + handlers + JSON fixtures
 ├── styles/                    Reset + design tokens
 └── test/                      Vitest setup

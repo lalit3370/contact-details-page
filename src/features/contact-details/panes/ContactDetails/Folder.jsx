@@ -10,9 +10,10 @@ export function Folder({ folder, children }) {
   return (
     <Collapsible.Root open={open} onOpenChange={setOpen} className={styles.folder}>
       <div className={styles.folderHeader}>
+        {/* Label trigger fills the row; + Add sits between label and chevron;
+            chevron is its own trigger so both surfaces toggle the section. */}
         <Collapsible.Trigger className={styles.folderTrigger} aria-expanded={open}>
           <span className={styles.folderLabel}>{folder.label}</span>
-          <ChevronUpIcon className={styles.folderChevron} data-open={open} />
         </Collapsible.Trigger>
         {folder.showAdd ? (
           <button
@@ -23,6 +24,12 @@ export function Folder({ folder, children }) {
             + Add
           </button>
         ) : null}
+        <Collapsible.Trigger
+          className={styles.folderChevronTrigger}
+          aria-label={open ? 'Collapse' : 'Expand'}
+        >
+          <ChevronUpIcon className={styles.folderChevron} data-open={open} />
+        </Collapsible.Trigger>
       </div>
       <Collapsible.Content className={styles.folderBody}>{children}</Collapsible.Content>
     </Collapsible.Root>

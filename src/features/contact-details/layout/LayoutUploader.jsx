@@ -120,9 +120,28 @@ export function LayoutUploader() {
 
 const EXAMPLE = `{
   "panes": [
-    { "id": "contactDetails", "type": "contactDetails", "folders": [
-      { "id": "contact", "label": "Quick", "fieldIds": ["firstName", "lastName"], "defaultOpen": true }
-    ]},
+    {
+      "id": "contactDetails",
+      "type": "contactDetails",
+      "views": [
+        { "id": "fields", "label": "All Fields" },
+        { "id": "dnd",    "label": "DND" }
+      ],
+      "actions": [
+        { "id": "send-email", "label": "Send email" },
+        { "id": "delete",     "label": "Delete", "variant": "danger" }
+      ],
+      "folders": [
+        {
+          "id": "contact",
+          "label": "Contact",
+          "fieldIds": ["firstName", "lastName"],
+          "defaultOpen": true,
+          "showAdd": true
+        }
+      ]
+    },
+    { "id": "conversations", "type": "conversations" },
     { "id": "notes", "type": "notes" }
   ]
 }`;
