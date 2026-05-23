@@ -102,7 +102,10 @@ export function ContactHeader({ contactId, contact }) {
                 <ChevronDownIcon />
               </DropdownMenu.Trigger>
               <DropdownMenu.Portal>
-                <DropdownMenu.Content className={styles.actionMenu} sideOffset={6}>
+                <DropdownMenu.Content
+                  className={`${styles.actionMenu} ${styles.actionMenuFit}`}
+                  sideOffset={6}
+                >
                   {(ownersData?.owners ?? []).map((o) => (
                     <DropdownMenu.Item
                       key={o.id}
@@ -131,7 +134,10 @@ export function ContactHeader({ contactId, contact }) {
                 <ChevronDownIcon />
               </DropdownMenu.Trigger>
               <DropdownMenu.Portal>
-                <DropdownMenu.Content className={styles.actionMenu} sideOffset={6}>
+                <DropdownMenu.Content
+                  className={`${styles.actionMenu} ${styles.actionMenuFit}`}
+                  sideOffset={6}
+                >
                   {(header.followers ?? []).map((f) => (
                     <DropdownMenu.Item key={f.id} className={styles.actionMenuItem}>
                       {f.name}

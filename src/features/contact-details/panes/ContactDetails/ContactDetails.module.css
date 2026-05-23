@@ -301,6 +301,13 @@
   z-index: 50;
 }
 
+/* Owner/Followers menus: size to the longest user name instead of the
+   160px floor used by the action menu. */
+.actionMenuFit {
+  width: min-content;
+  min-width: 0;
+}
+
 .actionMenuItem,
 .actionMenuItemDanger {
   padding: 6px 8px;
