@@ -171,6 +171,7 @@ MSW ships in production as the demo backend.
 
 - All edits are in-memory only; refresh resets state
 - MSW acts as the demo backend
+- **MSW service worker lifecycle.** MSW uses a browser service worker to intercept `/api/*` requests. Browsers may stop idle service workers after a period of inactivity, which can temporarily cause requests to bypass MSW until the page reloads and the worker re-registers. In a production application backed by real APIs, this issue would not exist because network requests would go directly to the backend. MSW was chosen here because it provides a realistic API layer with minimal setup and keeps the demo self-contained for reviewers.
 - Some actions are intentionally non-persistent or decorative
 - Conversations simulate activity feeds without real-time transport
 - The app currently ships with two mocked contacts
