@@ -22,7 +22,8 @@ A single-page React app rendering a CRM contact details view from JSON configura
 
 ```
 src/
-├── app/                       App shell — entry, providers, router, QueryClient, 404
+├── index.jsx                  Entry — MSW boot + React root mount
+├── app/                       App shell — providers, router, QueryClient, 404
 ├── features/                  Feature modules — one folder per product area
 │   └── contact-details/
 │       ├── api/               Query hooks
@@ -30,7 +31,7 @@ src/
 │       ├── panes/             ContactDetails, Conversations, Notes
 │       ├── routes/            Route components
 │       └── __tests__/         Vitest specs
-├── shared/                    Generic primitives reused across features
+├── shared/                    Generic primitives + pure utilities
 ├── mocks/                     MSW worker + handlers + JSON fixtures
 ├── styles/                    Reset + design tokens
 └── test/                      Vitest setup
@@ -38,7 +39,7 @@ src/
 
 Three layers:
 
-- **`app/`** owns bootstrapping, the provider tree, and the router. A second feature adds a route here; nothing else changes.
+- **`index.jsx` + `app/`** own bootstrapping, the provider tree, and the router. A second feature adds a route here; nothing else changes.
 - **`features/<name>/`** owns rendering, composition, registries, query hooks, and routes for one product area. Self-contained.
 - **`shared/`** holds primitives reused by multiple features. Single-feature code stays inside the feature.
 

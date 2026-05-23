@@ -1,8 +1,8 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
-import { AppProviders } from './AppProviders.jsx';
-import { AppRoutes } from './routes.jsx';
+import { AppProviders } from './app/AppProviders.jsx';
+import { AppRoutes } from './app/Routes.jsx';
 import '@/styles/base.css';
 
 async function bootstrap() {
