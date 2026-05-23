@@ -6,6 +6,7 @@ import { useContacts, useOwners } from '../../api/queries.js';
 import { qk } from '../../api/queryKeys.js';
 import { notImplemented } from '@/shared/utils.js';
 import { Avatar, Chip, IconButton } from '@/shared/primitives.jsx';
+import { ChevronLeftIcon, ChevronRightIcon, ChevronDownIcon, PhoneIcon } from '@/shared/Icons.jsx';
 import styles from './ContactDetails.module.css';
 
 export function ContactHeader({ contactId, contact }) {
@@ -81,14 +82,7 @@ export function ContactHeader({ contactId, contact }) {
             className={styles.headerCallBtn}
             onClick={notImplemented('Call')}
           >
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-              <path
-                d="M3 3.5C3 2.67 3.67 2 4.5 2H5.5L6.5 4.5L5 5.5C5.5 7 7 8.5 8.5 9L9.5 7.5L12 8.5V9.5C12 10.33 11.33 11 10.5 11C6.36 11 3 7.64 3 3.5Z"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinejoin="round"
-              />
-            </svg>
+            <PhoneIcon />
           </IconButton>
         </div>
 
@@ -182,47 +176,5 @@ export function ContactHeader({ contactId, contact }) {
         </div>
       </div>
     </div>
-  );
-}
-
-function ChevronLeftIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-      <path
-        d="M10 4L6 8L10 12"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
-function ChevronRightIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-      <path
-        d="M6 4L10 8L6 12"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
-function ChevronDownIcon() {
-  return (
-    <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-      <path
-        d="M4 6L8 10L12 6"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
   );
 }

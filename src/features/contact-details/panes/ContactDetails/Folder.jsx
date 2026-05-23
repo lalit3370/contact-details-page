@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import * as Collapsible from '@radix-ui/react-collapsible';
 import { notImplemented } from '@/shared/utils.js';
+import { ChevronUpIcon } from '@/shared/Icons.jsx';
 import styles from './ContactDetails.module.css';
 
 export function Folder({ folder, children }) {
@@ -11,23 +12,7 @@ export function Folder({ folder, children }) {
       <div className={styles.folderHeader}>
         <Collapsible.Trigger className={styles.folderTrigger} aria-expanded={open}>
           <span className={styles.folderLabel}>{folder.label}</span>
-          <svg
-            className={styles.folderChevron}
-            data-open={open}
-            width="14"
-            height="14"
-            viewBox="0 0 16 16"
-            fill="none"
-            aria-hidden="true"
-          >
-            <path
-              d="M4 10L8 6L12 10"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
+          <ChevronUpIcon className={styles.folderChevron} data-open={open} />
         </Collapsible.Trigger>
         {folder.showAdd ? (
           <button

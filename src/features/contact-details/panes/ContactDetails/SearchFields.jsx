@@ -1,21 +1,12 @@
 import { notImplemented } from '@/shared/utils.js';
+import { SearchIcon, FilterIcon } from '@/shared/Icons.jsx';
 import styles from './ContactDetails.module.css';
 
 export function SearchFields({ value, onChange }) {
   return (
     <div className={styles.searchRow} role="search">
       <div className={styles.searchInputWrap}>
-        <svg
-          className={styles.searchIcon}
-          width="16"
-          height="16"
-          viewBox="0 0 16 16"
-          fill="none"
-          aria-hidden="true"
-        >
-          <circle cx="7" cy="7" r="5" stroke="currentColor" strokeWidth="1.5" />
-          <path d="M11 11L14 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-        </svg>
+        <SearchIcon className={styles.searchIcon} />
         <input
           type="search"
           className={styles.searchInput}
@@ -30,14 +21,7 @@ export function SearchFields({ value, onChange }) {
           aria-label="Filter"
           onClick={notImplemented('Filter')}
         >
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <path
-              d="M2 4H14M4 8H12M6 12H10"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-            />
-          </svg>
+          <FilterIcon />
         </button>
       </div>
     </div>

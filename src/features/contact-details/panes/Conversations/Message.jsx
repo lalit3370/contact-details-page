@@ -1,4 +1,5 @@
 import { Avatar } from '@/shared/primitives.jsx';
+import { StarIcon, ReplyArrowIcon, KebabIcon } from '@/shared/Icons.jsx';
 import { OrderTrackingCard } from './OrderTrackingCard.jsx';
 import styles from './Conversations.module.css';
 
@@ -38,42 +39,5 @@ export function Message({ message, avatarFor, onReply }) {
         ) : null}
       </div>
     </div>
-  );
-}
-
-function StarIcon() {
-  return (
-    <svg width="12" height="12" viewBox="0 0 16 16" fill="#facc15" aria-hidden="true">
-      <path
-        d="M8 1L10 6L15 6L11 9L13 14L8 11L3 14L5 9L1 6L6 6L8 1Z"
-        stroke="#facc15"
-        strokeWidth="1"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
-function ReplyArrowIcon() {
-  return (
-    <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-      <path
-        d="M7 4L3 8L7 12M3 8H10C12 8 13 9 13 11V13"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
-function KebabIcon() {
-  return (
-    <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-      <circle cx="8" cy="3" r="1.2" />
-      <circle cx="8" cy="8" r="1.2" />
-      <circle cx="8" cy="13" r="1.2" />
-    </svg>
   );
 }

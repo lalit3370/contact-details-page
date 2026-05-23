@@ -1,4 +1,5 @@
 import { Message } from './Message.jsx';
+import { ExpandIcon } from '@/shared/Icons.jsx';
 import styles from './Conversations.module.css';
 
 export function Thread({ thread, avatarFor, onReply }) {
@@ -9,15 +10,7 @@ export function Thread({ thread, avatarFor, onReply }) {
           {thread.subject}
         </span>
         <button type="button" className={styles.threadExpand} aria-label="Expand thread">
-          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <path
-              d="M3 9V13H7M13 7V3H9M3 13L7 9M13 3L9 7"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
+          <ExpandIcon />
         </button>
       </header>
       {thread.messageCount ? (
