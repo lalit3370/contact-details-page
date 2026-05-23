@@ -1,6 +1,7 @@
 import { forwardRef, useImperativeHandle, useRef, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { formatClockTime } from '@/shared/utils.js';
+import { qk } from '../../api/queryKeys.js';
 import styles from './Conversations.module.css';
 
 export const MessageInput = forwardRef(function MessageInput({ contactId }, ref) {
@@ -15,7 +16,7 @@ export const MessageInput = forwardRef(function MessageInput({ contactId }, ref)
   const send = () => {
     const trimmed = value.trim();
     if (!trimmed || !contactId) return;
-    qc.setQueryData(['conversations', contactId], (prev) => {
+    qc.setQueryData(qk.conversations(contactId), (prev) => {
       if (!prev) return prev;
       const now = new Date();
       return {

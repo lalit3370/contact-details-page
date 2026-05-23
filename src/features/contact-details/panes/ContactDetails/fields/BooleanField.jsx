@@ -1,4 +1,5 @@
 import { useQueryClient } from '@tanstack/react-query';
+import { qk } from '../../../api/queryKeys.js';
 import styles from './Field.module.css';
 
 export function BooleanField({ field, value, fieldId, contactId }) {
@@ -6,7 +7,7 @@ export function BooleanField({ field, value, fieldId, contactId }) {
   const on = Boolean(value);
 
   const toggle = () => {
-    qc.setQueryData(['contact', contactId], (prev) =>
+    qc.setQueryData(qk.contact(contactId), (prev) =>
       prev ? { ...prev, fields: { ...prev.fields, [fieldId]: !on } } : prev,
     );
   };

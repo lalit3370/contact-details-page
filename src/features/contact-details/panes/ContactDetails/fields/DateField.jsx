@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { formatDateDisplay } from '@/shared/utils.js';
+import { qk } from '../../../api/queryKeys.js';
 import styles from './Field.module.css';
 
 export function DateField({ field, value, fieldId, contactId }) {
@@ -19,7 +20,7 @@ export function DateField({ field, value, fieldId, contactId }) {
 
   const commit = () => {
     if (draft !== (value ?? '')) {
-      qc.setQueryData(['contact', contactId], (prev) =>
+      qc.setQueryData(qk.contact(contactId), (prev) =>
         prev ? { ...prev, fields: { ...prev.fields, [fieldId]: draft || null } } : prev,
       );
     }

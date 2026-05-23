@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
+import { qk } from '../../../api/queryKeys.js';
 import styles from './Field.module.css';
 
 export function NumberField({ field, value, fieldId, contactId }) {
@@ -36,7 +37,7 @@ export function NumberField({ field, value, fieldId, contactId }) {
   const commit = () => {
     const parsed = draft === '' ? null : Number(draft);
     if (parsed !== value) {
-      qc.setQueryData(['contact', contactId], (prev) =>
+      qc.setQueryData(qk.contact(contactId), (prev) =>
         prev ? { ...prev, fields: { ...prev.fields, [fieldId]: parsed } } : prev,
       );
     }

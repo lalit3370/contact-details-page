@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { useQueryClient } from '@tanstack/react-query';
 import { useContacts } from '../../api/queries.js';
+import { qk } from '../../api/queryKeys.js';
 import { Avatar, Chip, IconButton } from '@/shared/primitives.jsx';
 import styles from './ContactDetails.module.css';
 
@@ -18,7 +19,7 @@ export function ContactHeader({ contactId, contact }) {
   const qc = useQueryClient();
 
   const updateHeader = (patch) => {
-    qc.setQueryData(['contact', contactId], (prev) =>
+    qc.setQueryData(qk.contact(contactId), (prev) =>
       prev ? { ...prev, header: { ...prev.header, ...patch } } : prev,
     );
   };

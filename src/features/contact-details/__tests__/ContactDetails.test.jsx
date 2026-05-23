@@ -5,10 +5,11 @@ import { BrowserRouter } from 'react-router-dom';
 import { LayoutOverrideProvider } from '../layout/LayoutOverrideContext.jsx';
 import { TooltipProvider } from '@/shared/Tooltip.jsx';
 import { ContactDetails } from '../panes/ContactDetails/ContactDetails.jsx';
+import { qk } from '../api/queryKeys.js';
 
 function buildWrapper() {
   const qc = new QueryClient({ defaultOptions: { queries: { retry: false } } });
-  qc.setQueryData(['layout'], {
+  qc.setQueryData(qk.layout, {
     panes: [
       {
         id: 'cd',
@@ -25,13 +26,13 @@ function buildWrapper() {
       },
     ],
   });
-  qc.setQueryData(['fields'], {
+  qc.setQueryData(qk.fields, {
     fields: {
       firstName: { label: 'First Name', type: 'string' },
       email: { label: 'Email', type: 'email' },
     },
   });
-  qc.setQueryData(['contact', 'c1'], {
+  qc.setQueryData(qk.contact('c1'), {
     id: 'c1',
     header: {
       avatarUrl: null,
@@ -44,7 +45,7 @@ function buildWrapper() {
     },
     fields: { firstName: 'Olivia', email: 'olivia@example.com' },
   });
-  qc.setQueryData(['contacts'], {
+  qc.setQueryData(qk.contacts, {
     contacts: [
       { id: 'c1', displayName: 'Olivia John', avatarUrl: null },
       { id: 'c2', displayName: 'Marcus Chen', avatarUrl: null },

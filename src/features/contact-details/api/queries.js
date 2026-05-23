@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useContext } from 'react';
 import { LayoutOverrideContext } from '../layout/LayoutOverrideContext.jsx';
 import { apiUrl } from '@/shared/utils.js';
+import { qk } from './queryKeys.js';
 
 async function fetchJson(url) {
   const res = await fetch(url);
@@ -11,14 +12,14 @@ async function fetchJson(url) {
 
 export function useContacts() {
   return useQuery({
-    queryKey: ['contacts'],
+    queryKey: qk.contacts,
     queryFn: () => fetchJson(apiUrl('/contacts')),
   });
 }
 
 export function useContact(contactId) {
   return useQuery({
-    queryKey: ['contact', contactId],
+    queryKey: qk.contact(contactId),
     queryFn: () => fetchJson(apiUrl(`/contacts/${contactId}`)),
     enabled: Boolean(contactId),
   });
@@ -27,7 +28,7 @@ export function useContact(contactId) {
 export function useFields() {
   const { override } = useContext(LayoutOverrideContext);
   const real = useQuery({
-    queryKey: ['fields'],
+    queryKey: qk.fields,
     queryFn: () => fetchJson(apiUrl('/contact/fields')),
   });
   if (override?.fields) {
@@ -39,7 +40,7 @@ export function useFields() {
 export function useLayout() {
   const { override } = useContext(LayoutOverrideContext);
   const real = useQuery({
-    queryKey: ['layout'],
+    queryKey: qk.layout,
     queryFn: () => fetchJson(apiUrl('/contact/layout')),
   });
   if (override?.layout) {
@@ -50,7 +51,7 @@ export function useLayout() {
 
 export function useConversations(contactId) {
   return useQuery({
-    queryKey: ['conversations', contactId],
+    queryKey: qk.conversations(contactId),
     queryFn: () => fetchJson(apiUrl(`/contacts/${contactId}/conversations`)),
     enabled: Boolean(contactId),
   });
@@ -58,7 +59,7 @@ export function useConversations(contactId) {
 
 export function useNotes(contactId) {
   return useQuery({
-    queryKey: ['notes', contactId],
+    queryKey: qk.notes(contactId),
     queryFn: () => fetchJson(apiUrl(`/contacts/${contactId}/notes`)),
     enabled: Boolean(contactId),
   });

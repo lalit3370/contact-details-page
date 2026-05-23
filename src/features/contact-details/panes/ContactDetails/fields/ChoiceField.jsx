@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
+import { qk } from '../../../api/queryKeys.js';
 import styles from './Field.module.css';
 
 export function ChoiceField({ field, value, fieldId, contactId }) {
@@ -22,7 +23,7 @@ export function ChoiceField({ field, value, fieldId, contactId }) {
   }, [editing]);
 
   const setValue = (next) => {
-    qc.setQueryData(['contact', contactId], (prev) =>
+    qc.setQueryData(qk.contact(contactId), (prev) =>
       prev ? { ...prev, fields: { ...prev.fields, [fieldId]: next } } : prev,
     );
   };

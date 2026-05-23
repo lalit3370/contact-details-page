@@ -3,12 +3,13 @@ import { renderHook } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { LayoutOverrideProvider } from '../layout/LayoutOverrideContext.jsx';
 import { useResolvedFolders } from '../panes/ContactDetails/useResolvedFolders.js';
+import { qk } from '../api/queryKeys.js';
 
 function buildWrapper(seed) {
   const qc = new QueryClient({ defaultOptions: { queries: { retry: false } } });
-  if (seed.layout) qc.setQueryData(['layout'], seed.layout);
-  if (seed.fields) qc.setQueryData(['fields'], seed.fields);
-  if (seed.contact) qc.setQueryData(['contact', 'c1'], seed.contact);
+  if (seed.layout) qc.setQueryData(qk.layout, seed.layout);
+  if (seed.fields) qc.setQueryData(qk.fields, seed.fields);
+  if (seed.contact) qc.setQueryData(qk.contact('c1'), seed.contact);
   function Wrapper({ children }) {
     return (
       <QueryClientProvider client={qc}>

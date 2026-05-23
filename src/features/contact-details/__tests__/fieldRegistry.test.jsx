@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { fieldRegistry } from '../panes/ContactDetails/fieldRegistry.js';
 import { FieldRow } from '../panes/ContactDetails/FieldRow.jsx';
+import { qk } from '../api/queryKeys.js';
 
 const FIXTURES = {
   string: { label: 'String', type: 'string', value: 'hello' },
@@ -21,7 +22,7 @@ const FIXTURES = {
 
 function renderWithClient(ui) {
   const qc = new QueryClient({ defaultOptions: { queries: { retry: false } } });
-  qc.setQueryData(['contact', 'c1'], { id: 'c1', header: {}, fields: {} });
+  qc.setQueryData(qk.contact('c1'), { id: 'c1', header: {}, fields: {} });
   return render(<QueryClientProvider client={qc}>{ui}</QueryClientProvider>);
 }
 

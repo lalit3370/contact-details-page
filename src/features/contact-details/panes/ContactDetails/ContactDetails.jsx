@@ -7,6 +7,7 @@ import { Folder } from './Folder.jsx';
 import { FieldRow } from './FieldRow.jsx';
 import { DndPanel } from './DndPanel.jsx';
 import { useResolvedFolders } from './useResolvedFolders.js';
+import { qk } from '../../api/queryKeys.js';
 import { Skeleton } from '@/shared/primitives.jsx';
 import styles from './ContactDetails.module.css';
 
@@ -34,13 +35,13 @@ export function ContactDetails({ contactId }) {
 
   const toggleDnd = () => {
     if (!contact) return;
-    qc.setQueryData(['contact', contactId], (prev) =>
+    qc.setQueryData(qk.contact(contactId), (prev) =>
       prev ? { ...prev, header: { ...prev.header, dnd: !prev.header.dnd } } : prev,
     );
   };
 
   const toggleDndChannel = (channelId, value) => {
-    qc.setQueryData(['contact', contactId], (prev) =>
+    qc.setQueryData(qk.contact(contactId), (prev) =>
       prev
         ? {
             ...prev,
