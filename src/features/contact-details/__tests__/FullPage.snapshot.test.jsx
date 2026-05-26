@@ -3,7 +3,6 @@ import { render } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { LayoutOverrideProvider } from '../layout/LayoutOverrideContext.jsx';
-import { TooltipProvider } from '@/shared/Tooltip.jsx';
 import { ContactDetailsRoute } from '../routes/ContactDetailsRoute.jsx';
 import { qk } from '../api/queryKeys.js';
 
@@ -43,13 +42,11 @@ describe('Full page snapshot — contact 1', () => {
     const { container } = render(
       <QueryClientProvider client={qc}>
         <LayoutOverrideProvider>
-          <TooltipProvider>
-            <MemoryRouter initialEntries={['/contact/details/1']}>
-              <Routes>
-                <Route path="/contact/details/:contactId" element={<ContactDetailsRoute />} />
-              </Routes>
-            </MemoryRouter>
-          </TooltipProvider>
+          <MemoryRouter initialEntries={['/contact/details/1']}>
+            <Routes>
+              <Route path="/contact/details/:contactId" element={<ContactDetailsRoute />} />
+            </Routes>
+          </MemoryRouter>
         </LayoutOverrideProvider>
       </QueryClientProvider>,
     );
