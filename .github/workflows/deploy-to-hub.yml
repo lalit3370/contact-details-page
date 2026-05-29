@@ -1,0 +1,42 @@
+name: Deploy to projects-hub
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-to-hub
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - run: npm ci
+
+      - run: npx vite build --base=/contact-details-page/
+
+      # SPA fallback for hard-reloads on nested routes under the subpath.
+      - name: Add SPA 404 fallback
+        run: cp dist/index.html dist/404.html
+
+      - name: Push to projects-hub
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          personal_token: ${{ secrets.HUB_DEPLOY_TOKEN }}
+          external_repository: lalit3370/projects-hub
+          publish_branch: main
+          publish_dir: ./dist
+          destination_dir: contact-details-page
+          keep_files: true
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
+          commit_message: 'deploy(contact-details-page): ${{ github.sha }}'
