@@ -2,7 +2,6 @@ import { useLayout } from '../api/queries.js';
 import { paneRegistry } from './paneRegistry.js';
 import { LayoutUploader } from './LayoutUploader.jsx';
 import { ErrorBoundary } from '@/shared/ErrorBoundary.jsx';
-import { TooltipProvider } from '@/shared/Tooltip.jsx';
 import { Skeleton } from '@/shared/primitives.jsx';
 import styles from './PageLayout.module.css';
 
@@ -37,27 +36,25 @@ export function PageLayout({ contactId }) {
   }
 
   return (
-    <TooltipProvider>
-      <div className={styles.page}>
-        {(layout.panes ?? []).map((pane) => {
-          const Pane = paneRegistry[pane.type];
-          if (!Pane) {
-            if (import.meta.env.DEV) {
-              console.warn(`[PageLayout] unknown pane type "${pane.type}" — skipping`);
-            }
-            return null;
+    <div className={styles.page}>
+      {(layout.panes ?? []).map((pane) => {
+        const Pane = paneRegistry[pane.type];
+        if (!Pane) {
+          if (import.meta.env.DEV) {
+            console.warn(`[PageLayout] unknown pane type "${pane.type}" — skipping`);
           }
-          return (
-            <ErrorBoundary key={pane.id} fallback={<PaneErrorFallback paneId={pane.id} />}>
-              <div className={styles.paneSlot} data-pane={pane.type}>
-                <Pane pane={pane} contactId={contactId} />
-              </div>
-            </ErrorBoundary>
-          );
-        })}
-        <LayoutUploader />
-      </div>
-    </TooltipProvider>
+          return null;
+        }
+        return (
+          <ErrorBoundary key={pane.id} fallback={<PaneErrorFallback paneId={pane.id} />}>
+            <div className={styles.paneSlot} data-pane={pane.type}>
+              <Pane pane={pane} contactId={contactId} />
+            </div>
+          </ErrorBoundary>
+        );
+      })}
+      <LayoutUploader />
+    </div>
   );
 }
 

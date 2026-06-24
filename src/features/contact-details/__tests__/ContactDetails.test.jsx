@@ -3,7 +3,6 @@ import { render, screen } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter } from 'react-router-dom';
 import { LayoutOverrideProvider } from '../layout/LayoutOverrideContext.jsx';
-import { TooltipProvider } from '@/shared/Tooltip.jsx';
 import { ContactDetails } from '../panes/ContactDetails/ContactDetails.jsx';
 import { qk } from '../api/queryKeys.js';
 import { PaneType } from '../layout/paneTypes.js';
@@ -62,9 +61,7 @@ describe('ContactDetails', () => {
       <BrowserRouter>
         <QueryClientProvider client={qc}>
           <LayoutOverrideProvider>
-            <TooltipProvider>
-              <ContactDetails contactId="c1" />
-            </TooltipProvider>
+            <ContactDetails contactId="c1" />
           </LayoutOverrideProvider>
         </QueryClientProvider>
       </BrowserRouter>,
